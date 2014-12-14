@@ -1,0 +1,38 @@
+.iogc-ChatPanel .gwt-TextBox {
+    color: #600;
+    font-size:1.4em;
+}
+
+.iogc-ChatPanel .iogc-ChatPanel-messages {
+    border: 1px solid #6e6e6e;
+    font-size: 1.1em;
+}
+
+.nope {
+    display: none;
+}
+
+.chat-link {
+    font-size: 1.1em;
+}
+
+.chat-image {
+    width: 300px;
+    height: 200px;
+    margin: 5px auto;
+}
+
+.btn_collection button {
+    width: 30px;
+    margin: 0 2px;
+}
+
+button.danger {
+    background-color: #F00;
+    font-weight: bolder;
+    color: #DDD;
+}
+
+.flag_btn_collection {
+    float:right;
+}

@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "okdice",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "kdice tools",
+    "description": "The description of the application"
+  }
+}
