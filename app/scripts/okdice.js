@@ -93,7 +93,7 @@
                 hex: okdice.rgb[id],
                 container: $(".iogc-PlayerPanel" + id),
                 name: function() {
-                    return this.container.find('iogc-PlayerPanel-name').text();
+                    return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
                 }
             };
         };
@@ -101,44 +101,7 @@
         this.list = _.map(_.range(6),function(id){
             return player(id);
         });
-
-        // this.list = [{
-        //     "id": 0,
-        //     "color": "red",
-        //     "hex": "#F00",
-        //     "container": $(".iogc-PlayerPanel0")
-        // }, {
-        //     "id": 1,
-        //     "color": "green",
-        //     "hex": "#090",
-        //     "container": $(".iogc-PlayerPanel1")
-        // }, {
-        //     "id": 2,
-        //     "color": "60C",
-        //     "hex": "#900",
-        //     "container": $(".iogc-PlayerPanel2")
-        // }, {
-        //     "id": 3,
-        //     "color": "yellow",
-        //     "hex": "#FF0",
-        //     "container": $(".iogc-PlayerPanel3")
-        // }, {
-        //     "id": 4,
-        //     "color": "blue",
-        //     "hex": "#009",
-        //     "container": $(".iogc-PlayerPanel4")
-        // }, {
-        //     "id": 5,
-        //     "color": "brown",
-        //     "hex": "#630",
-        //     "container": $(".iogc-PlayerPanel5")
-        // }, {
-        //     "id": 6,
-        //     "color": "teal",
-        //     "hex": "#0CC",
-        //     "container": $(".iogc-PlayerPanel6")
-        // }];
-
+       
         this.containers = function(id) {
             if (id) {
                 return this.list[id].container;
@@ -304,7 +267,7 @@
 
             // colorize the player boxes
             _.each(okdice.players().list, function(player) {
-                console.log("Colorizing player", player);
+                console.log("Colorizing player", player.name());
 
                 player.container.css({
                     "background-color": player.hex
