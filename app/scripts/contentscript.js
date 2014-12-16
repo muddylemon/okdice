@@ -19,11 +19,11 @@ $(document).ready(function() {
             "label": "n",
             "className": ""
         }, {
-            "text": "good game goober",
+            "text": "giggity giggity",
             "label": "gg",
             "className": ""
         }, {
-            "text": "good tournament, my lad",
+            "text": "good tournament, my ",
             "label": "gt",
             "className": ""
         }, {
@@ -34,6 +34,7 @@ $(document).ready(function() {
         theme:{
             active: true,
             hideHeader: true,
+            leftAlign: true,
             fontsize: "14px"
         }
     };
@@ -43,10 +44,6 @@ $(document).ready(function() {
 
     okdice.ui("chatmessages").css({
         "background-color": "#E3E3E3"
-    });
-
-    okdice.ui("header").css({
-        "display": "none"
     });
 
 

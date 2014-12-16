@@ -1,3 +1,8 @@
+
+center {   /*ha ha*/
+    text-align: left;
+}
+
 .iogc-ChatPanel .gwt-TextBox {
     color: #600;
     font-size:1.4em;
@@ -34,5 +39,35 @@ button.danger {
 }
 
 .flag_btn_collection {
-    float:right;
+    margin-top: -20px;
+    float:left;
+    list-style: none;
+}
+.flag_btn_collection li {
+    display: inline-block;
+    font-size: 20px;
+    margin: 0 4px;
+    padding: 2px 4px;
+    border: 1px solid #CCC;
+    cursor: pointer;
+}
+
+.flag_btn_collection li.flagged {
+    border: 2px solid red;
+}
+
+.flag_btn_collection li:hover {
+    border: 1px solid #666;
+
+}
+
+.player_btn_collection {
+    list-style: none;
+}
+
+.player_btn_collection li {
+    display: inline-block;
+    font-size: 12px;
+    padding: 2px;
+    border: 1px solid #666;
 }

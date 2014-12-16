@@ -42,3 +42,9 @@ Initial Feature Wishlist
 * Chat History
 * Focus chat on keypress
 * Keyboard shortcuts for ending turn, flagging
+* Auto end turn button
+* Theming
+** Smaller activity log window
+** Bigger chat log (sidebar)
+* Mute buttons on player squares
+
