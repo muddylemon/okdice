@@ -82,7 +82,11 @@
 
     };
 
-    okdice.players = function() {
+    okdice.players = function(id) {
+
+        if (id) {
+            return player(id);
+        }
 
 
 
@@ -107,11 +111,6 @@
                 return this.list[id].container;
             }
             return _.pluck(this.list, 'container');
-        };
-
-        this.controls = function() {
-            // bind  ui object with buttons for muting, flagging, etc
-
         };
 
         return this;
@@ -188,11 +187,30 @@
         var btnsTemplate = _.template('<ul class="player_btn_collection"><li class="flag-player" data-txt="Flag <%= color %>"> &#9873; </li> <li class="mute-player" data-playerid="<%= id %>">mute</li> </ul>');
 
         _.each(okdice.players().list, function(player) {
+            var control = $(btnsTemplate(player));
+            control.appendTo(player.container);
             
-            var control = btnsTemplate(player);
+            player.container.bind('mouseover', function() {
+                control.show();
+            });
 
-            console.log("player control", control);
-            $(control).appendTo(player.container.find('.iogc-GamePanel'));
+            player.container.bind('mouseout', function(){
+                control.hide();
+            });
+
+        });
+
+        $(".flag-player").bind('click', function() {
+            okdice.say($(this).data('txt'));
+        });
+
+        $(".mute-player").bind('click', function() {
+            var player_id = $(this).data('id');
+            var player = okdice.players(player_id);
+            console.log("trying to mute", player);
+            
+
+            okdice.muteUser(player.name());
         });
 
     };
