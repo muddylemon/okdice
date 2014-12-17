@@ -84,10 +84,6 @@
 
     okdice.players = function(id) {
 
-        if (id) {
-            return player(id);
-        }
-
 
 
         var player = function(id) {
@@ -102,10 +98,10 @@
             };
         };
 
-        this.list = _.map(_.range(6),function(id){
+        this.list = _.map(_.range(6), function(id) {
             return player(id);
         });
-       
+
         this.containers = function(id) {
             if (id) {
                 return this.list[id].container;
@@ -113,6 +109,11 @@
             return _.pluck(this.list, 'container');
         };
 
+        this.get = function(id) {
+            if (id) {
+                return player(id);
+            }
+        };
         return this;
     };
 
@@ -184,17 +185,17 @@
 
     okdice.playerButtons = function() {
 
-        var btnsTemplate = _.template('<ul class="player_btn_collection"><li class="flag-player" data-txt="Flag <%= color %>"> &#9873; </li> <li class="mute-player" data-playerid="<%= id %>">mute</li> </ul>');
+        var btnsTemplate = _.template('<div class="player_btn_collection"><button class="flag-player" data-txt="Flag <%= color %>"> &#9873; Flag </button><button class="mute-player" data-playerid="<%= id %>"> Mute </button></div>');
 
         _.each(okdice.players().list, function(player) {
             var control = $(btnsTemplate(player));
             control.appendTo(player.container);
-            
+
             player.container.bind('mouseover', function() {
                 control.show();
             });
 
-            player.container.bind('mouseout', function(){
+            player.container.bind('mouseout', function() {
                 control.hide();
             });
 
@@ -205,11 +206,7 @@
         });
 
         $(".mute-player").bind('click', function() {
-            var player_id = $(this).data('id');
-            var player = okdice.players(player_id);
-            console.log("trying to mute", player);
-            
-
+            var player = okdice.players().get($(this).data('playerid'));
             okdice.muteUser(player.name());
         });
 
@@ -288,7 +285,8 @@
                 console.log("Colorizing player", player.name());
 
                 player.container.css({
-                    "background-color": player.hex
+                    "background-color": player.hex,
+                    "padding": "4px"
                 }).addClass("player-" + player.color);
 
             });

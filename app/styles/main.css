@@ -68,20 +68,11 @@ button.danger {
     width: 150px;
     z-index: 2222;
     background-color: #DDD;
-    list-style: none;
     display:none;
 }
 
-.player_btn_collection li {
-    display: block;
+.player_btn_collection button {
+    display: inline-block;
     font-size: 12px;
     padding: 2px 4px;
-    border: 1px solid #666;
-    background-color: #CCC;
-    cursor: pointer;
-}
-
-.player_btn_collection li:hover {
-    background-color: #999;
-    color: #F00;
 }
