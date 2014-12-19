@@ -30,21 +30,38 @@ Testing The Alpha Version
 
 If you're feeling adventurous, clone the repo and drop the app directory onto your chrome://extensions page. You will need to have developer mode enabled.
 
-Visit kdice and you should see the rudimentary features working. 
+Visit kdice and you should see the rudimentary features working.
 
-
-Initial Feature Wishlist
+Current Working Bits
 --
 
 * Chat Buttons
+** Buttons that "say" common phrases like gg, gt, thank you, etc
 * Flag Buttons
-* Sit In to a table with one click
-* Chat History
-* Focus chat on keypress
-* Keyboard shortcuts for ending turn, flagging
-* Auto end turn button
+** Buttons that looks like flags of the appropriate colors
+** Clicking says "Flag [color]"
+** Flag is highlighted to remind you
+* Player Buttons
+** Flag and Mute buttons
+** Visible when you mouseover a player
 * Theming
-** Smaller activity log window
-** Bigger chat log (sidebar)
-* Mute buttons on player squares
+** Remove header
+** Background color of players
+** Embiggening of the chat text
+
+
+Coming Soon
+--
+
+* Sit In to a table with one click
+** Click table name in table selector and go to the table (no pressing Go button)
+** Option to sit in automatically on arrival
+* Chat History
+* Keyboard shortcuts
+** Focus chat on keyboard shortcut (c?)
+** End turn
+** Flag (1,2,3... )
+* Smaller activity log window
+* Highlight flagged player
+* Extension options page
 
