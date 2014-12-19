@@ -65,4 +65,7 @@ Coming Soon
 * Highlight flagged player
   * Clear at end game event
 * Extension options page
+* Highlight your turn in tab
+  * Favicon alert
+  * Tab title changes
 
