@@ -7,7 +7,7 @@ $(document).ready(function() {
     var config = {
         active: true,
         chatbuttons: [{
-            "text": "thank you",
+            "text": "ty gl",
             "label": "ty",
             "className": ""
         }, {
@@ -19,11 +19,11 @@ $(document).ready(function() {
             "label": "n",
             "className": ""
         }, {
-            "text": "giggity giggity",
+            "text": "gg",
             "label": "gg",
             "className": ""
         }, {
-            "text": "good tournament, my ",
+            "text": "gt ",
             "label": "gt",
             "className": ""
         }, {
@@ -41,11 +41,6 @@ $(document).ready(function() {
 
 
     okdice.start(config);
-
-    okdice.ui("chatmessages").css({
-        "background-color": "#E3E3E3"
-    });
-
 
     // load local configs
 

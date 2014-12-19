@@ -42,7 +42,7 @@
 
         _.extend(okdice.options, options);
 
-        /** 
+        /**
          ** trigger loaded event
          ** run options.onStart(options)
          ** load any interface elements (option dialogs, new buttons)
@@ -147,7 +147,7 @@
 
     okdice.sitIn = function(table) {
         if (table) {
-            // if we"re not in the right table, move there    
+            // if we"re not in the right table, move there
         }
         // click "sit in" button if available
         okdice.ui('sitInButton').click();
@@ -164,7 +164,7 @@
 
 
     /**
-        add UI features 
+        add UI features
      **/
 
     okdice.chatButtons = function(options) {
@@ -255,7 +255,7 @@
 
 
     okdice.keyboardControls = function(options) {
-        // listen to keystrokes 
+        // listen to keystrokes
         // if alt/ctrl clicked, listen for signals
         // like pressing c which will focus in chat
 
@@ -280,13 +280,15 @@
             }
 
 
+
             // colorize the player boxes
             _.each(okdice.players().list, function(player) {
                 console.log("Colorizing player", player.name());
 
                 player.container.css({
                     "background-color": player.hex,
-                    "padding": "4px"
+                    "border": "5px solid " + player.hex,
+                    "border-collapse":"separate"
                 }).addClass("player-" + player.color);
 
             });
@@ -299,11 +301,11 @@
 
     okdice.test = function(options) {
         // run tests
-        console.log("Testing Okdice", options);
+        console.log("Testing Okdice", options, okdice);
 
         /**
             Tests
-            Chat button exists, makes chat when pushed    
+            Chat button exists, makes chat when pushed
 
 
         **/

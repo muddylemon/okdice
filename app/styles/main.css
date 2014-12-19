@@ -3,13 +3,16 @@ center {   /*ha ha*/
     text-align: left;
 }
 
+.gwt-DialogBox {
+    margin-left: -100px;
+}
+
 .iogc-ChatPanel .gwt-TextBox {
     color: #600;
     font-size:1.4em;
 }
 
-.iogc-ChatPanel .iogc-ChatPanel-messages {
-    border: 1px solid #6e6e6e;
+.iogc-ChatPanel .iogc-ChatPanel-messages div {
     font-size: 1.1em;
 }
 
