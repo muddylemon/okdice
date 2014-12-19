@@ -36,33 +36,33 @@ Current Working Bits
 --
 
 * Chat Buttons
-** Buttons that "say" common phrases like gg, gt, thank you, etc
+  * Buttons that "say" common phrases like gg, gt, thank you, etc
 * Flag Buttons
-** Buttons that looks like flags of the appropriate colors
-** Clicking says "Flag [color]"
-** Flag is highlighted to remind you
+  * Buttons that looks like flags of the appropriate colors
+  * Clicking says "Flag [color]"
+  * Flag is highlighted to remind you
 * Player Buttons
-** Flag and Mute buttons
-** Visible when you mouseover a player
+  * Flag and Mute buttons
+  * Visible when you mouseover a player
 * Theming
-** Remove header
-** Background color of players
-** Embiggening of the chat text
+  * Remove header
+  * Background color of players
+  * Embiggening of the chat text
 
 
 Coming Soon
 --
 
 * Sit In to a table with one click
-** Click table name in table selector and go to the table (no pressing Go button)
-** Option to sit in automatically on arrival
+  * Click table name in table selector and go to the table (no pressing Go button)
+  * Option to sit in automatically on arrival
 * Chat History
 * Keyboard shortcuts
-** Focus chat on keyboard shortcut (c?)
-** End turn
-** Flag (1,2,3... )
+  * Focus chat on keyboard shortcut (c?)
+  * End turn
+  * Flag (1,2,3... )
 * Smaller activity log window
 * Highlight flagged player
-** Clear at end game event
+  * Clear at end game event
 * Extension options page
 
