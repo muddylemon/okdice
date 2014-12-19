@@ -63,5 +63,6 @@ Coming Soon
 ** Flag (1,2,3... )
 * Smaller activity log window
 * Highlight flagged player
+** Clear at end game event
 * Extension options page
 
