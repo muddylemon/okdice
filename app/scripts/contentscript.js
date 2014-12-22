@@ -2,45 +2,17 @@ $(document).ready(function() {
 
     "use strict";
 
-    console.log("Okdice script loaded", okdice);
+    var storage = chrome.storage.sync;
 
-    var config = {
-        active: true,
-        chatbuttons: [{
-            "text": "ty gl",
-            "label": "ty",
-            "className": ""
-        }, {
-            "text": "yes",
-            "label": "y",
-            "className": ""
-        }, {
-            "text": "no",
-            "label": "n",
-            "className": ""
-        }, {
-            "text": "gg",
-            "label": "gg",
-            "className": ""
-        }, {
-            "text": "gt ",
-            "label": "gt",
-            "className": ""
-        }, {
-            "text": "gl 2 all friends lets warrr",
-            "label": "gl",
-            "className": "danger"
-        }],
-        theme:{
-            active: true,
-            hideHeader: true,
-            leftAlign: true,
-            fontsize: "14px"
-        }
-    };
+    storage.get('config',function(stored){
+        var config = stored.config;
+        console.log("Loading okdice", config);
+        okdice.start(config);
+    });
 
 
-    okdice.start(config);
+
+
 
     // load local configs
 

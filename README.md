@@ -52,7 +52,8 @@ Current Working Bits
 
 Coming Soon
 --
-
+* Local storage of user accounts
+** Change alts with a click
 * Sit In to a table with one click
   * Click table name in table selector and go to the table (no pressing Go button)
   * Option to sit in automatically on arrival
