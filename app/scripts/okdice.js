@@ -10,8 +10,15 @@
 
     window.okdice = {};
 
+    okdice.version = "0.0.1";
+
+    /**
+        Default Options
+
+    **/
     okdice.options = {
         active: true,
+        debug: false,
         chatbuttons: [{
             "text": "thank you",
             "label": "ty",
@@ -40,7 +47,7 @@
 
     okdice.start = function(options) {
 
-        _.extend(okdice.options, options);
+        var opts = _.extend(okdice.options, options);
 
         /**
          ** trigger loaded event
@@ -49,11 +56,12 @@
          ** bind events
          **/
 
-        okdice.test(options);
-        okdice.theme(options);
-        okdice.chatButtons(options);
-        okdice.flagButtons();
-        okdice.playerButtons();
+        if (opts.debug) {
+            okdice.test(opts);
+        }
+
+        okdice.theme(opts);
+        okdice.loadButtons(opts);
 
     };
 
@@ -82,9 +90,7 @@
 
     };
 
-    okdice.players = function(id) {
-
-
+    okdice.players = function() {
 
         var player = function(id) {
             return {
@@ -114,6 +120,7 @@
                 return player(id);
             }
         };
+
         return this;
     };
 
@@ -166,6 +173,13 @@
     /**
         add UI features
      **/
+
+
+    okdice.loadButtons = function(options) {
+        okdice.chatButtons(options);
+        okdice.flagButtons();
+        okdice.playerButtons();
+    };
 
     okdice.chatButtons = function(options) {
 
@@ -288,7 +302,7 @@
                 player.container.css({
                     "background-color": player.hex,
                     "border": "5px solid " + player.hex,
-                    "border-collapse":"separate"
+                    "border-collapse": "separate"
                 }).addClass("player-" + player.color);
 
             });

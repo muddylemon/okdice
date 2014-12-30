@@ -6,17 +6,10 @@ $(document).ready(function() {
 
     storage.get('config',function(stored){
         var config = stored.config;
-        console.log("Loading okdice", config);
+        console.log("Loading okdice v" + okdice.version);
+        console.dir(config);
         okdice.start(config);
     });
-
-
-
-
-
-    // load local configs
-
-    // add chat buttons
 
     // make links clickable
 
