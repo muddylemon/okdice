@@ -41,10 +41,12 @@ var config = {
 var storeConfig = function(config) {
 
     chrome.storage.sync.set({'config': config}, function() {
-          console.log('okdice configuration saved');
+        console.log('okdice configuration saved');
     });
 
-}
+};
+
+
 
 storeConfig(config);
 

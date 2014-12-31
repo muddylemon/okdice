@@ -30,6 +30,7 @@
             "js": [
                 "bower_components/jquery/dist/jquery.js",
                 "bower_components/underscore/underscore.js",
+                "bower_components/Autolinker.js/dist/Autolinker.js",
                 "scripts/okdice.js",
                 "scripts/contentscript.js"
             ],

@@ -12,10 +12,10 @@
 
     okdice.version = "0.0.1";
 
-    /**
-        Default Options
+    okdice.log = function(message) {
+        console.log(message); // new relic or something?
+    };
 
-    **/
     okdice.options = {
         active: true,
         debug: false,
@@ -60,9 +60,54 @@
             okdice.test(opts);
         }
 
+        okdice.events.init(); // initialize the event monitor
         okdice.theme(opts);
         okdice.loadButtons(opts);
 
+        window.setInterval(okdice.beat, opts.beatpace || 1000);
+
+    };
+
+
+    okdice.events = {
+        init: function() {
+            _.extend(okdice,{
+                isGameRunning: false,
+                isMyTurn: false
+            });
+        },
+        game: {
+            start: function() {
+                okdice.isGameRunning = true;
+            },
+            end: function() {
+                okdice.isGameRunning = false;
+            }
+        },
+        turn: {
+            start: function() {
+                okdice.isMyTurn = true;
+            },
+            end: function() {
+                okdice.isMyTurn = false;
+            }
+        }
+    };
+
+    okdice.beat = function() {
+
+
+        if ( okdice.aet && okdice.aet.is(":checked") ) {
+            okdice.endTurn();
+        }
+
+        // check if auto end turn is on, run it
+        // is it my turn? change the tab title
+        // is it not my turn? stop that
+        // did a game just start? note that
+        // flip the events toggles
+        // call the event functions
+        // etc
     };
 
     okdice.ui = function(name) {
@@ -71,6 +116,7 @@
             game: $("#KGame"),
             gametable: $(".iogc-GameWindow-table"),
             gamecontrols: $(".iogc-Controls"),
+            sidebar: $("#iogc-PlayerPanel"),
             header: $("#hd"),
             chatbox: $(".iogc-ChatPanel"),
             chatinput: $(".iogc-ChatPanel").find(".gwt-TextBox"),
@@ -82,9 +128,12 @@
             players: okdice.players.containers
         };
 
+        elements.buttonPark = $('<div class="btn_park"></div>');
+
         if (name && elements[name]) {
             return elements[name];
         }
+
         return elements;
 
 
@@ -166,7 +215,12 @@
     };
 
     okdice.endTurn = function() {
-
+        this.ui("gamecontrols").find("button").each(function(){
+            if ($(this).html() === "End Turn" && $(this).is(":visible")) {
+                $(this).click();
+                okdice.log("Ended turn");
+            }
+        });
     };
 
 
@@ -179,6 +233,13 @@
         okdice.chatButtons(options);
         okdice.flagButtons();
         okdice.playerButtons();
+        okdice.autoEndTurnButton();
+    };
+
+    okdice.autoEndTurnButton = function() {
+        var bt = '<div class="okdice-auto-end"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>';
+        okdice.ui("sidebar").after(bt);
+        okdice.aet = $("#aet");
     };
 
     okdice.chatButtons = function(options) {
@@ -258,6 +319,11 @@
         // bind to chat window
         // each new entry, look for links
         // replace with html <a href="LINK">LINK</a>
+
+        var linkified = Autolinker.link(text, {
+            newWindow: true,
+            truncate: 50
+        });
 
     };
 
