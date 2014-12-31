@@ -16,7 +16,7 @@
         console.log(message); // new relic or something?
     };
 
-    okdice.options = {
+    okdice.default_options = {
         active: true,
         debug: false,
         chatbuttons: [{
@@ -47,7 +47,7 @@
 
     okdice.start = function(options) {
 
-        var opts = _.extend(okdice.options, options);
+        var opts = _.extend(okdice.default_options, options);
 
         /**
          ** trigger loaded event
@@ -71,7 +71,7 @@
 
     okdice.events = {
         init: function() {
-            _.extend(okdice,{
+            _.extend(okdice, {
                 isGameRunning: false,
                 isMyTurn: false
             });
@@ -97,7 +97,7 @@
     okdice.beat = function() {
 
 
-        if ( okdice.aet && okdice.aet.is(":checked") ) {
+        if (okdice.aet && okdice.aet.is(":checked")) {
             okdice.endTurn();
         }
 
@@ -128,7 +128,7 @@
             players: okdice.players.containers
         };
 
-        elements.buttonPark = $('<div class="btn_park"></div>');
+
 
         if (name && elements[name]) {
             return elements[name];
@@ -215,7 +215,7 @@
     };
 
     okdice.endTurn = function() {
-        this.ui("gamecontrols").find("button").each(function(){
+        this.ui("gamecontrols").find("button").each(function() {
             if ($(this).html() === "End Turn" && $(this).is(":visible")) {
                 $(this).click();
                 okdice.log("Ended turn");
@@ -230,32 +230,33 @@
 
 
     okdice.loadButtons = function(options) {
-        okdice.chatButtons(options);
-        okdice.flagButtons();
-        okdice.playerButtons();
-        okdice.autoEndTurnButton();
-    };
 
-    okdice.autoEndTurnButton = function() {
-        var bt = '<div class="okdice-auto-end"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>';
-        okdice.ui("sidebar").after(bt);
-        okdice.aet = $("#aet");
-    };
+        var buttonPark = $('<div class="btn_park"></div>').appendTo(okdice.ui('sidebar'));
 
-    okdice.chatButtons = function(options) {
-
-        var btns = $('<div class="btn_collection"></div>');
-
-        _.each(options.chatbuttons, function(btn) {
-            btns.append('<button data-txt="' + btn.text + '" class="' + btn.className + '">' + btn.label + '</button>');
+        /**
+            Chat Buttons
+        **/
+        var chatContainer = $('<div class="chat-buttons"></div>');
+        var chatButtonTemplate = _.template('<button data-txt="<%= text %>" class="<%= className %>"><%= label %></button>');
+        var chatButtons = _.map(options.chatbuttons,function(btn){
+            return $(chatButtonTemplate(btn));
         });
 
-        $("button", btns).bind("click", function() {
+        chatContainer.append(chatButtons);
+
+        okdice.ui("chatinput").after(chatContainer);
+
+        $("button", chatContainer).bind("click", function() {
             okdice.say($(this).data("txt"));
         });
 
-        okdice.ui("chatinput").after(btns);
+        // auto end turn
+        buttonPark.append('<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>');
+        okdice.aet = $("#aet");
 
+
+        okdice.flagButtons(buttonPark);
+        okdice.playerButtons();
     };
 
     okdice.playerButtons = function() {
@@ -287,7 +288,7 @@
 
     };
 
-    okdice.flagButtons = function() {
+    okdice.flagButtons = function(container) {
 
         var btns = $('<ul class="flag_btn_collection"></ul>');
 
@@ -297,9 +298,7 @@
             b.data('txt', 'Flag ' + color);
 
             b.css({
-                "margin": "0 2px",
-                "color": okdice.rgb[index],
-                "font-size": "25px"
+                "color": okdice.rgb[index]
             });
 
             btns.append(b);
@@ -311,7 +310,7 @@
             $(this).addClass("flagged");
         });
 
-        okdice.ui("gamecontrols").after(btns);
+        container.append(btns);
 
     };
 

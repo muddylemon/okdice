@@ -41,17 +41,20 @@ button.danger {
     color: #DDD;
 }
 
+.auto-end-turn {
+    margin: 5px 0;
+}
+
 .flag_btn_collection {
-    margin-top: -20px;
-    float:left;
+    margin: 0;
     list-style: none;
 }
 .flag_btn_collection li {
     display: inline-block;
-    font-size: 20px;
-    margin: 0 4px;
-    padding: 2px 4px;
-    border: 1px solid #CCC;
+    font-size: 25px;
+    margin:0;
+    padding: 2px;
+    border: 1px solid #FFF;
     cursor: pointer;
 }
 
@@ -65,12 +68,12 @@ button.danger {
 
 .player_btn_collection {
     position: absolute;
-    top:0;
+    top:5px;
     left:0;
     margin: 0;
+    padding:5px;
     width: 150px;
     z-index: 2222;
-    background-color: #DDD;
     display:none;
 }
 
@@ -80,6 +83,11 @@ button.danger {
     padding: 2px 4px;
 }
 
+.btn_park {
+    border: 1px solid #DDD;
+    padding: 4px;
+
+}
 
 
 /* options page */
