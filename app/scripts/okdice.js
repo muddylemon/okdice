@@ -97,13 +97,36 @@
     okdice.beat = function() {
 
 
-        if (okdice.aet && okdice.aet.is(":checked")) {
-            okdice.endTurn();
-        }
 
-        // check if auto end turn is on, run it
+        var tasks = {
+            autoend: function() {
+                if (okdice.aet && okdice.aet.is(":checked")) {
+                    okdice.endTurn();
+                }
+                return this;
+            },
+            turn: function() {
+                // toggle isMyTurn if it is my turn right now, or vice versa
+                // if it is my turn, blink my tab title and change the favicon
+                return this;
+            },
+            chat: function() {
+                // are there any unprocessed chats?
+                // process each new one
+                // do linkify
+                // highlight things
+                // add images/video embeds?
+                return this;
+            }
+        };
+
+        tasks.autoend()
+             .turn()
+             .chat();
+
         // is it my turn? change the tab title
         // is it not my turn? stop that
+
         // did a game just start? note that
         // flip the events toggles
         // call the event functions
@@ -153,24 +176,29 @@
             };
         };
 
-        this.list = _.map(_.range(6), function(id) {
+        var list = _.map(_.range(6), function(id) {
             return player(id);
         });
 
-        this.containers = function(id) {
+        var containers = function(id) {
             if (id) {
                 return this.list[id].container;
             }
             return _.pluck(this.list, 'container');
         };
 
-        this.get = function(id) {
+        var get = function(id) {
             if (id) {
                 return player(id);
             }
         };
 
-        return this;
+        return {
+            player:player,
+            list:list,
+            containers:containers,
+            get:get
+        };
     };
 
 
@@ -238,7 +266,7 @@
         **/
         var chatContainer = $('<div class="chat-buttons"></div>');
         var chatButtonTemplate = _.template('<button data-txt="<%= text %>" class="<%= className %>"><%= label %></button>');
-        var chatButtons = _.map(options.chatbuttons,function(btn){
+        var chatButtons = _.map(options.chatbuttons, function(btn) {
             return $(chatButtonTemplate(btn));
         });
 
