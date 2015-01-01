@@ -98,7 +98,7 @@
 
 
 
-        var tasks = {
+        var processes = {
             autoend: function() {
                 if (okdice.aet && okdice.aet.is(":checked")) {
                     okdice.endTurn();
@@ -111,6 +111,14 @@
                 return this;
             },
             chat: function() {
+
+                $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function(el) {
+                    // split the username bit from the message bit
+
+                    el.addClass('okdiced');
+                });
+
+
                 // are there any unprocessed chats?
                 // process each new one
                 // do linkify
@@ -120,9 +128,9 @@
             }
         };
 
-        tasks.autoend()
-             .turn()
-             .chat();
+        processes.autoend()
+            .turn()
+            .chat();
 
         // is it my turn? change the tab title
         // is it not my turn? stop that
@@ -172,6 +180,20 @@
                 container: $(".iogc-PlayerPanel" + id),
                 name: function() {
                     return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
+                },
+                review: function(text) {
+                    // post this as a review of this player
+                },
+                flag: function() {
+                    okdice.say("Flag " + this.name());
+                },
+                mute: function() {
+                    okdice.say("/mute " + this.name());
+                    okdice.say("Player " + this.name() + " has been muted.");
+                },
+                unmute: function() {
+                    okdice.say("/unmute " + this.name());
+                    okdice.say("Player " + this.name() + " has been unmuted.");
                 }
             };
         };
@@ -182,22 +204,23 @@
 
         var containers = function(id) {
             if (id) {
-                return this.list[id].container;
+                return list[id].container;
             }
-            return _.pluck(this.list, 'container');
+            return _.pluck(list, 'container');
         };
 
         var get = function(id) {
             if (id) {
-                return player(id);
+                return list[id];
             }
+            return list;
         };
 
         return {
-            player:player,
-            list:list,
-            containers:containers,
-            get:get
+            player: player,
+            list: list,
+            containers: containers,
+            get: get
         };
     };
 
@@ -218,16 +241,6 @@
     okdice.chatFocus = function() {
         okdice.ui("chatinput").focus();
     };
-
-    okdice.flagUser = function(user) {
-        okdice.say("Flag " + user);
-    };
-
-    okdice.muteUser = function(user) {
-        okdice.say("/mute " + user);
-        okdice.say("User " + user + " has been muted.");
-    };
-
 
     okdice.sitIn = function(table) {
         if (table) {
@@ -306,12 +319,13 @@
         });
 
         $(".flag-player").bind('click', function() {
-            okdice.say($(this).data('txt'));
+            var player = okdice.players().get($(this).data('playerid'));
+            player.flag();
         });
 
         $(".mute-player").bind('click', function() {
             var player = okdice.players().get($(this).data('playerid'));
-            okdice.muteUser(player.name());
+            player.mute();
         });
 
     };
@@ -342,12 +356,12 @@
 
     };
 
-    okdice.linkifyChat = function() {
+    okdice.linkifyChat = function(text) {
         // bind to chat window
         // each new entry, look for links
         // replace with html <a href="LINK">LINK</a>
 
-        var linkified = Autolinker.link(text, {
+        return Autolinker.link(text, {
             newWindow: true,
             truncate: 50
         });
@@ -372,8 +386,6 @@
 
         var themeOptions = options.theme || {};
 
-        console.log("Okdice Theme", themeOptions);
-
         if (themeOptions.active) {
             // do the theming
             if (themeOptions.hideHeader) {
@@ -386,11 +398,7 @@
                 });
             }
 
-
-
-            // colorize the player boxes
             _.each(okdice.players().list, function(player) {
-                console.log("Colorizing player", player.name());
 
                 player.container.css({
                     "background-color": player.hex,
@@ -413,8 +421,6 @@
         /**
             Tests
             Chat button exists, makes chat when pushed
-
-
         **/
     };
 
