@@ -131,9 +131,14 @@
             chat: function() {
 
                 $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
+                    var el = $(this);
+                    //var innards = el.child('.gwt-HTML');
+                    console.log(el);
+                    // var speaker = innards.find('b').text();
+                    // var msg = innards.text().split(':',2)[1];
                     // split the username bit from the message bit
-
-                    $(this).addClass('okdiced');
+                    el.html( okdice.linkifyChat( el.html() ) );
+                    el.addClass('okdiced');
                 });
 
 
@@ -379,38 +384,36 @@
     okdice.tableSelector = function() {
 
 
+        var optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %></span> </option>');
+
+        var categoryClassMap = {
+            "2": "zero",
+            "3": "100",
+            "4": "500",
+            "5": "2000",
+            "6": "5000"
+        };
 
         var loadTables = function(select) {
-
-            var optionTemplate = _.template('<option value="<%= name %>" class="<%= optionClass %>"><%= name %> (<%= playerCount %>)</option>');
-
-            var categoryClassMap = {
-                "2": "zero-table",
-                "3": "one-hundred-table",
-                "4": "five-hundred-table",
-                "5": "two-thousand-table",
-                "6": "five-thousand-table"
-            };
 
             $.ajax({
                     url: 'http://kdice.com/api/kdice/tables',
                     type: 'GET',
                 })
                 .done(function(data) {
-
-                    console.log("Tables", data.tables);
-
                     var rows = _.map(data.tables, function(table) {
                         if (table.state == 0) {
 
-                            table.optionClass = categoryClassMap[table.category_id];
+                            table.desc = categoryClassMap[table.category_id];
 
                             return optionTemplate(table);
                         }
-
                     });
 
-                    select.append(rows);
+                    if (rows.length) {
+                        select.empty();
+                        select.append(rows);
+                    }
                 });
         };
 
@@ -420,10 +423,18 @@
 
         loadTables(select);
 
-        select.bind('focus', this.loadTables, this);
+        select.bind('focus', function(){
+            console.log("focus", this);
 
-        select.bind('change',function(){
-            window.location = "#" + $(this).val();
+            loadTables($(this))
+        });
+
+        select.bind('change', function() {
+            var tableName = $(this).val();
+            if (tableName) {
+                window.location = "#" + tableName;
+            }
+
         });
 
     }

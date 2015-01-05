@@ -91,19 +91,20 @@ button.danger {
 
 }
 
-
-.zero-table {
-    color: yellow;
+.okdiced {
+    border-bottom: 1px dashed #CCC;
 }
 
-.one-hundred-table {
-    color: #0F0;
+.table-selector {
+    margin: 3px 10px;
+    font-size: 1.2em;
 }
-
-.five-hundred-table {
-
+.opt-desc {
+    font-weight: bolder;
 }
-
+.table-selector option:nth-of-type(2n) {
+    background-color: #CCC;
+}
 
 /* options page */
 
