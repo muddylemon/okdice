@@ -7,7 +7,7 @@ okdice is a platform for client side enhancements to the kDice strategy game hos
 How it works
 --
 
-The windows.okdice object exposes an api to the UI elements and actions a user performs in the browser
+The *okdice* object exposes an api to the UI elements and actions a user performs in the browser
 
 
     okdice.say('I love brown shoes.');
@@ -45,7 +45,7 @@ Current Working Bits
   * Flag and Mute buttons
   * Visible when you mouseover a player
 * Theming
-  * Remove header
+  * Hide header
   * Background color of players
   * Embiggening of the chat text
 

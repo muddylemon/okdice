@@ -10,6 +10,8 @@
 
     okdice = {
         version: "0.0.2",
+        colors: ["red", "green", "purple", "yellow", "blue", "brown", "teal"],
+        rgb: ["#F00", "#090", "#60C", "#FF0", "#009", "#630", "#0CC"],
         session: {
             player: false,
             cycle: 0
@@ -58,7 +60,7 @@
         var opts = _.extend(okdice.options, options);
 
         if (opts.active === false) {
-            console.log("options.active is false, shutting down");
+            console.log("okdice setting: options.active is false, shutting down");
             return;
         }
 
@@ -112,7 +114,7 @@
 
     okdice.beat = function() {
 
-
+        okdice.session.cycle++;
 
         var processes = {
             autoend: function() {
@@ -133,20 +135,12 @@
                 $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
                     var el = $(this);
                     //var innards = el.child('.gwt-HTML');
-                    console.log(el);
                     // var speaker = innards.find('b').text();
                     // var msg = innards.text().split(':',2)[1];
                     // split the username bit from the message bit
                     el.html( okdice.linkifyChat( el.html() ) );
                     el.addClass('okdiced');
                 });
-
-
-                // are there any unprocessed chats?
-                // process each new one
-                // do linkify
-                // highlight things
-                // add images/video embeds?
                 return this;
             }
         };
@@ -221,7 +215,7 @@
             };
         };
 
-        var list = _.map(_.range(6), function(id) {
+        var list = _.map(_.range(7), function(id) {
             return player(id);
         });
 
@@ -255,9 +249,7 @@
 
 
     okdice.say = function(message) {
-        // should be a string
-        // put it in the chat input and push the send button
-        okdice.ui("chatinput").val(message);
+        okdice.ui("chatinput").val(message.toString());
         okdice.ui("chatsendbutton").click();
     };
 
@@ -267,14 +259,12 @@
 
     okdice.sitIn = function(table) {
         if (table) {
-            // if we"re not in the right table, move there
+            window.location = "#" + table;
         }
-        // click "sit in" button if available
         okdice.ui('sitInButton').click();
     };
 
     okdice.sitOut = function() {
-        // click the sit out button
         okdice.ui('sitOutButton').click();
     };
 
@@ -506,11 +496,6 @@
             Chat button exists, makes chat when pushed
         **/
     };
-
-
-
-    okdice.colors = ["red", "green", "purple", "yellow", "blue", "brown", "teal"];
-    okdice.rgb = ["#F00", "#090", "#60C", "#FF0", "#009", "#630", "#0CC"];
 
 
     return okdice;
