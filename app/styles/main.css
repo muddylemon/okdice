@@ -48,6 +48,8 @@ button.danger {
 .flag_btn_collection {
     margin: 0;
     list-style: none;
+    text-shadow: 2px 1px 3px #000;
+
 }
 .flag_btn_collection li {
     display: inline-block;

@@ -8,61 +8,77 @@
 (function() {
 
 
-    window.okdice = {};
-
-    okdice.version = "0.0.1";
-
-    okdice.log = function(message) {
-        console.log(message); // new relic or something?
-    };
-
-    okdice.default_options = {
-        active: true,
-        debug: false,
-        chatbuttons: [{
-            "text": "thank you",
-            "label": "ty",
-        }, {
-            "text": "yes",
-            "label": "y",
-        }, {
-            "text": "no",
-            "label": "n",
-        }, {
-            "text": "gg",
-            "label": "gg",
-        }, {
-            "text": "gt",
-            "label": "gt",
-        }, {
-            "text": "gl 2 all friends lets warrr",
-            "label": "gl",
-        }],
-        theme: {
+    okdice = {
+        version: "0.0.2",
+        session: {
+            player: false,
+            cycle: 0
+        },
+        status: {
+            loaded: false,
+            loggedIn: false,
+            playing: false,
+            myTurn: false,
+            flagged: false,
+            autoend: false
+        },
+        options: {
             active: true,
-            hideHeader: true,
-            fontsize: "14px"
+            debug: true,
+            beatpace: 1200,
+            chatbuttons: [{
+                "text": "thank you",
+                "label": "ty",
+            }, {
+                "text": "yes",
+                "label": "y",
+            }, {
+                "text": "no",
+                "label": "n",
+            }, {
+                "text": "gg",
+                "label": "gg",
+            }, {
+                "text": "gt",
+                "label": "gt",
+            }, {
+                "text": "gl 2 all friends lets warrr",
+                "label": "gl",
+            }],
+            theme: {
+                active: true,
+                hideHeader: true,
+                fontsize: "14px"
+            }
         }
     };
 
     okdice.start = function(options) {
 
-        var opts = _.extend(okdice.default_options, options);
+        var opts = _.extend(okdice.options, options);
 
-        /**
-         ** trigger loaded event
-         ** run options.onStart(options)
-         ** load any interface elements (option dialogs, new buttons)
-         ** bind events
-         **/
+        if (opts.active === false) {
+            console.log("options.active is false, shutting down");
+            return;
+        }
 
         if (opts.debug) {
             okdice.test(opts);
         }
 
+        // check if player is logged in
+        okdice.session.player = $(".iogc-LoginPanel-nameHeading").text() || false;
+        if (okdice.session.player) {
+            okdice.status.loggedIn = true;
+        }
+
+
+
         okdice.events.init(); // initialize the event monitor
         okdice.theme(opts);
         okdice.loadButtons(opts);
+
+        okdice.status.loaded = true;
 
         window.setInterval(okdice.beat, opts.beatpace || 1000);
 
@@ -71,10 +87,10 @@
 
     okdice.events = {
         init: function() {
-            _.extend(okdice, {
-                isGameRunning: false,
-                isMyTurn: false
-            });
+
+
+
+
         },
         game: {
             start: function() {
@@ -101,21 +117,23 @@
         var processes = {
             autoend: function() {
                 if (okdice.aet && okdice.aet.is(":checked")) {
+                    okdice.status.autoend = true;
                     okdice.endTurn();
                 }
                 return this;
             },
             turn: function() {
+
                 // toggle isMyTurn if it is my turn right now, or vice versa
                 // if it is my turn, blink my tab title and change the favicon
                 return this;
             },
             chat: function() {
 
-                $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function(el) {
+                $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
                     // split the username bit from the message bit
 
-                    el.addClass('okdiced');
+                    $(this).addClass('okdiced');
                 });
 
 
@@ -259,7 +277,7 @@
         this.ui("gamecontrols").find("button").each(function() {
             if ($(this).html() === "End Turn" && $(this).is(":visible")) {
                 $(this).click();
-                okdice.log("Ended turn");
+                console.log("Ended turn");
             }
         });
     };
@@ -355,6 +373,14 @@
         container.append(btns);
 
     };
+
+    okdice.tableSelector = function() {
+        // get the list of current tables
+        // read the status of each
+        // cache that data
+        //
+
+    }
 
     okdice.linkifyChat = function(text) {
         // bind to chat window
