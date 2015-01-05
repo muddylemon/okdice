@@ -92,6 +92,19 @@ button.danger {
 }
 
 
+.zero-table {
+    color: yellow;
+}
+
+.one-hundred-table {
+    color: #0F0;
+}
+
+.five-hundred-table {
+
+}
+
+
 /* options page */
 
 .container {

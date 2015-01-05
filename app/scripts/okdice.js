@@ -77,6 +77,7 @@
         okdice.events.init(); // initialize the event monitor
         okdice.theme(opts);
         okdice.loadButtons(opts);
+        okdice.tableSelector();
 
         okdice.status.loaded = true;
 
@@ -87,7 +88,6 @@
 
     okdice.events = {
         init: function() {
-
 
 
 
@@ -283,9 +283,11 @@
     };
 
 
+
     /**
         add UI features
      **/
+
 
 
     okdice.loadButtons = function(options) {
@@ -375,10 +377,54 @@
     };
 
     okdice.tableSelector = function() {
-        // get the list of current tables
-        // read the status of each
-        // cache that data
-        //
+
+
+
+        var loadTables = function(select) {
+
+            var optionTemplate = _.template('<option value="<%= name %>" class="<%= optionClass %>"><%= name %> (<%= playerCount %>)</option>');
+
+            var categoryClassMap = {
+                "2": "zero-table",
+                "3": "one-hundred-table",
+                "4": "five-hundred-table",
+                "5": "two-thousand-table",
+                "6": "five-thousand-table"
+            };
+
+            $.ajax({
+                    url: 'http://kdice.com/api/kdice/tables',
+                    type: 'GET',
+                })
+                .done(function(data) {
+
+                    console.log("Tables", data.tables);
+
+                    var rows = _.map(data.tables, function(table) {
+                        if (table.state == 0) {
+
+                            table.optionClass = categoryClassMap[table.category_id];
+
+                            return optionTemplate(table);
+                        }
+
+                    });
+
+                    select.append(rows);
+                });
+        };
+
+        var select = $('<select class="table-selector"><option value="">Change Table</option></select>');
+        var selectWrapper = $("<td>").append(select);
+        $(".iogc-GameWindow-commands").find("tr").append(selectWrapper);
+
+        loadTables(select);
+
+        select.bind('focus', this.loadTables, this);
+
+        select.bind('change',function(){
+            window.location = "#" + $(this).val();
+        });
 
     }
 
