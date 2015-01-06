@@ -30,6 +30,11 @@ center {   /*ha ha*/
     margin: 5px auto;
 }
 
+.chat-btn {
+    padding: 4px;
+    margin: 2px;
+}
+
 .btn_collection button {
     width: 30px;
     margin: 0 2px;

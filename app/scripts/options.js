@@ -1,52 +1,53 @@
-'use strict';
+$(function() {
 
-/**
-    This is the default configuration
-**/
-var config = {
-        active: true,
-        chatbuttons: [{
-            "text": "ty gl",
-            "label": "ty",
-            "className": ""
-        }, {
-            "text": "yes",
-            "label": "y",
-            "className": ""
-        }, {
-            "text": "no",
-            "label": "n",
-            "className": ""
-        }, {
-            "text": "gg",
-            "label": "gg",
-            "className": ""
-        }, {
-            "text": "gt ",
-            "label": "gt",
-            "className": ""
-        }, {
-            "text": "gl 2 all friends lets warrr",
-            "label": "gl",
-            "className": "danger"
-        }],
-        theme:{
-            active: true,
-            hideHeader: true,
-            leftAlign: true,
-            fontsize: "14px"
-        }
-    };
+    var chatButtonTemplate = function(label, text) {
+        return '<div class="chat-button-config"><input type="text" size="4" class="chat-btn-label" value="' + label + '"> <input type="text" size="25" class="chat-btn-text" value="' + text + '"> </div>';
+    }
 
-var storeConfig = function(config) {
-
-    chrome.storage.sync.set({'config': config}, function() {
-        console.log('okdice configuration saved');
+    chrome.storage.sync.get('config', function(stored) {
+        console.log("Stored Config", stored.config);
+        _.each(stored.config['chatbuttons'], function(c) {
+            $(".chat-buttons").append(
+                chatButtonTemplate(c.label, c.text)
+            );
+        });
     });
 
-};
+
+
+    $(".add-chat").bind('click', function() {
+        $(".chat-buttons").append(chatButtonTemplate());
+    });
+
+    $(".save-button").bind('click', function() {
+
+        var config = {
+            active: true,
+            chatbuttons: [],
+            theme:{}
+        };
+
+        $(".chat-button-config").each(function(){
+            var label = $(this).find('.chat-btn-label').val();
+            var text = $(this).find('.chat-btn-text').val();
+            if (label && text) {
+                config.chatbuttons.push({
+                    label:label,
+                    text:text
+                });
+            }
+        });
+
+        console.log("Config saving", config);
+
+
+        chrome.storage.sync.set({
+            'config': config
+        }, function() {
+            console.log('okdice configuration saved');
+        });
+    });
 
 
 
-storeConfig(config);
-
+});

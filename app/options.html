@@ -14,32 +14,23 @@
         <!-- bower:js -->
         <!-- endbower -->
         <!-- endbuild -->
-
         <div class="container">
             <h1>okdice <small>The awesome, extensible kdice upgrade</small></h1>
-            <form class="okdice-options">
-                <fieldset>
-                    <legend>Chat Buttons</legend>
-                    <div class="chat-button-config">
-                        <input type="text" size="4" class="chat-btn-label">
-                        <input type="text" size="25" class="chat-btn-text">
-                    </div>
-                </fieldset>
-
-                <fieldset class="options-config">
-                    <legend>Theme Options</legend>
-                    <label><input type="checkbox" name="showHeader"> Show Header</label>
-                    <label><input type="checkbox" name="colorizePlayers"> Colorize Players</label>
-                </fieldset>
-
-                <fieldset class="submit-buttons">
-                    <button>Save Changes</button>
-                </fieldset>
-            </form>
-
+            <fieldset class="chat-buttons">
+                <legend>Chat Buttons <button class="add-chat"> + Add A Button </button> </legend>
+            </fieldset>
+            <fieldset class="options-config">
+                <legend>Theme Options</legend>
+                <label><input type="checkbox" name="showHeader"> Show Header</label>
+                <label><input type="checkbox" name="colorizePlayers"> Colorize Players</label>
+            </fieldset>
+            <fieldset class="submit-buttons">
+                <button class="save-button">Save Changes</button>
+            </fieldset>
         </div>
-
         <!-- build:js scripts/options.js -->
+        <script src="scripts/underscore.js"></script>
+        <script src="scripts/jquery.js"></script>
         <script src="scripts/options.js"></script>
         <!-- endbuild -->
     </body>
