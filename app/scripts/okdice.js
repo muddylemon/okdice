@@ -130,15 +130,20 @@
                 // if it is my turn, blink my tab title and change the favicon
                 return this;
             },
+            game: function() {
+
+                if ($(".iogc-GameWindow-status").text().indexOf('running') !== false) {
+
+                }
+
+
+                return this;
+            },
             chat: function() {
 
                 $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
                     var el = $(this);
-                    //var innards = el.child('.gwt-HTML');
-                    // var speaker = innards.find('b').text();
-                    // var msg = innards.text().split(':',2)[1];
-                    // split the username bit from the message bit
-                    el.html( okdice.linkifyChat( el.html() ) );
+                    el.html(okdice.linkifyChat(el.html()));
                     el.addClass('okdiced');
                 });
                 return this;
@@ -374,10 +379,10 @@
     okdice.tableSelector = function() {
 
 
-        var optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %></span> </option>');
+        var optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %> table</span> </option>');
 
         var categoryClassMap = {
-            "2": "zero",
+            "2": "0",
             "3": "100",
             "4": "500",
             "5": "2000",
@@ -401,22 +406,21 @@
                     });
 
                     if (rows.length) {
-                        select.empty();
+                        select.find('option:not(.default-option)').remove();
                         select.append(rows);
+
                     }
                 });
         };
 
-        var select = $('<select class="table-selector"><option value="">Change Table</option></select>');
+        var select = $('<select class="table-selector"><option value="" class="default-option">Change Table</option></select>');
         var selectWrapper = $("<td>").append(select);
         $(".iogc-GameWindow-commands").find("tr").append(selectWrapper);
 
         loadTables(select);
 
-        select.bind('focus', function(){
-            console.log("focus", this);
-
-            loadTables($(this))
+        select.bind('focus', function() {
+            loadTables($(this));
         });
 
         select.bind('change', function() {
@@ -424,6 +428,7 @@
             if (tableName) {
                 window.location = "#" + tableName;
             }
+            loadTables($(this));
 
         });
 
@@ -462,7 +467,9 @@
         if (themeOptions.active) {
             // do the theming
             if (themeOptions.hideHeader) {
-                okdice.ui('header').addClass('nope');
+                var menu = $('#iogc-regularMenu').clone();
+                okdice.ui('header').addClass('nope').after( menu );
+
             }
 
             if (themeOptions.leftAlign) {
