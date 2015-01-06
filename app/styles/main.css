@@ -45,13 +45,13 @@ button.danger {
     margin: 5px 0;
 }
 
-.flag_btn_collection {
+.flags {
     margin: 0;
     list-style: none;
     text-shadow: 2px 1px 3px #000;
 
 }
-.flag_btn_collection li {
+.flags li {
     display: inline-block;
     font-size: 25px;
     margin:0;
@@ -60,11 +60,11 @@ button.danger {
     cursor: pointer;
 }
 
-.flag_btn_collection li.flagged {
+.flags .flagged {
     border: 2px solid red;
 }
 
-.flag_btn_collection li:hover {
+.flags li:hover {
     border: 1px solid #666;
 }
 

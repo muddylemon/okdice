@@ -10,8 +10,11 @@
 
     okdice = {
         version: "0.0.2",
-        colors: ["red", "green", "purple", "yellow", "blue", "brown", "teal"],
-        rgb: ["#F00", "#090", "#60C", "#FF0", "#009", "#630", "#0CC"],
+        colors: {
+            names: ["red", "green", "purple", "yellow", "blue", "brown", "teal"],
+            lightrgb: ["#e5bfcb", "#84ba96", "#A884BA", "#baba84", "#8484ba", "#BA9684", "#84BABA"],
+            rgb: ["#F00", "#090", "#60C", "#FF0", "#009", "#630", "#0CC"]
+        },
         session: {
             player: false,
             cycle: 0
@@ -55,31 +58,26 @@
         }
     };
 
+
+
     okdice.start = function(options) {
 
         var opts = _.extend(okdice.options, options);
-
         if (opts.active === false) {
             console.log("okdice setting: options.active is false, shutting down");
             return;
         }
 
-        if (opts.debug) {
-            okdice.test(opts);
-        }
+        okdice.ui      = loadUi(opts);
+        okdice.players = loadPlayers();
+        okdice.actions = loadActions();
 
-        // check if player is logged in
-        okdice.session.player = $(".iogc-LoginPanel-nameHeading").text() || false;
-        if (okdice.session.player) {
-            okdice.status.loggedIn = true;
-        }
+        loadTheme(opts);
+        loadButtons(opts);
 
 
+        okdice.session.player = okdice.players.current();
 
-        okdice.events.init(); // initialize the event monitor
-        okdice.theme(opts);
-        okdice.loadButtons(opts);
-        okdice.tableSelector();
 
         okdice.status.loaded = true;
 
@@ -120,7 +118,7 @@
             autoend: function() {
                 if (okdice.aet && okdice.aet.is(":checked")) {
                     okdice.status.autoend = true;
-                    okdice.endTurn();
+                    okdice.actions.endTurn();
                 }
                 return this;
             },
@@ -163,168 +161,56 @@
         // etc
     };
 
-    okdice.ui = function(name) {
-
-        var elements = {
+    var loadUi = function() {
+        return {
             game: $("#KGame"),
             gametable: $(".iogc-GameWindow-table"),
             gamecontrols: $(".iogc-Controls"),
             sidebar: $("#iogc-PlayerPanel"),
             header: $("#hd"),
             chatbox: $(".iogc-ChatPanel"),
-            chatinput: $(".iogc-ChatPanel").find(".gwt-TextBox"),
+            chatinput: $(".iogc-ChatPanel .gwt-TextBox"),
             chatsendbutton: $(".iogc-ChatPanel").find(".iogc-NewButton"),
             chatmessages: $(".iogc-ChatPanel").find(".iogc-ChatPanel-messages"),
             tablelist: $(".iogc-ScrollTable-table"),
             sitOutButton: $(".iogc-GameWindow-sitOutButton"),
-            sitInButton: $(".iogc-GameWindow-sitDownButton"),
-            players: okdice.players.containers
-        };
-
-
-
-        if (name && elements[name]) {
-            return elements[name];
+            sitInButton: $(".iogc-GameWindow-sitDownButton")
         }
-
-        return elements;
-
-
-    };
-
-    okdice.players = function() {
-
-        var player = function(id) {
-            return {
-                id: id,
-                color: okdice.colors[id],
-                hex: okdice.rgb[id],
-                container: $(".iogc-PlayerPanel" + id),
-                name: function() {
-                    return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
-                },
-                review: function(text) {
-                    // post this as a review of this player
-                },
-                flag: function() {
-                    okdice.say("Flag " + this.name());
-                },
-                mute: function() {
-                    okdice.say("/mute " + this.name());
-                    okdice.say("Player " + this.name() + " has been muted.");
-                },
-                unmute: function() {
-                    okdice.say("/unmute " + this.name());
-                    okdice.say("Player " + this.name() + " has been unmuted.");
-                }
-            };
-        };
-
-        var list = _.map(_.range(7), function(id) {
-            return player(id);
-        });
-
-        var containers = function(id) {
-            if (id) {
-                return list[id].container;
-            }
-            return _.pluck(list, 'container');
-        };
-
-        var get = function(id) {
-            if (id) {
-                return list[id];
-            }
-            return list;
-        };
-
-        return {
-            player: player,
-            list: list,
-            containers: containers,
-            get: get
-        };
     };
 
 
+    var loadButtons = function(options) {
 
-    /*
-        Okdice Utility functions
-    */
+        var park = $('<div class="btn_park"></div>').appendTo(okdice.ui.sidebar);
+        park.append('<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>');
+        okdice.aet = $("#aet");
 
-
-    okdice.say = function(message) {
-        okdice.ui("chatinput").val(message.toString());
-        okdice.ui("chatsendbutton").click();
-    };
-
-    okdice.chatFocus = function() {
-        okdice.ui("chatinput").focus();
-    };
-
-    okdice.sitIn = function(table) {
-        if (table) {
-            window.location = "#" + table;
-        }
-        okdice.ui('sitInButton').click();
-    };
-
-    okdice.sitOut = function() {
-        okdice.ui('sitOutButton').click();
-    };
-
-    okdice.endTurn = function() {
-        this.ui("gamecontrols").find("button").each(function() {
-            if ($(this).html() === "End Turn" && $(this).is(":visible")) {
-                $(this).click();
-                console.log("Ended turn");
-            }
-        });
+        loadTableSelector();
+        loadFlagButtons(park);
+        loadPlayerButtons();
+        loadChatButtons(options);
     };
 
 
-
-    /**
-        add UI features
-     **/
-
-
-
-    okdice.loadButtons = function(options) {
-
-        var buttonPark = $('<div class="btn_park"></div>').appendTo(okdice.ui('sidebar'));
-
-        /**
-            Chat Buttons
-        **/
+    var loadChatButtons = function(options) {
         var chatContainer = $('<div class="chat-buttons"></div>');
         var chatButtonTemplate = _.template('<button data-txt="<%= text %>" class="<%= className %>"><%= label %></button>');
         var chatButtons = _.map(options.chatbuttons, function(btn) {
             return $(chatButtonTemplate(btn));
         });
 
-        chatContainer.append(chatButtons);
-
-        okdice.ui("chatinput").after(chatContainer);
+        okdice.ui.chatinput.after(chatContainer.append(chatButtons));
 
         $("button", chatContainer).bind("click", function() {
-            okdice.say($(this).data("txt"));
+            okdice.actions.say($(this).data("txt"));
         });
-
-        // auto end turn
-        buttonPark.append('<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>');
-        okdice.aet = $("#aet");
-
-
-        okdice.flagButtons(buttonPark);
-        okdice.playerButtons();
     };
 
-    okdice.playerButtons = function() {
+    var loadPlayerButtons = function() {
 
         var btnsTemplate = _.template('<div class="player_btn_collection"><button class="flag-player" data-txt="Flag <%= color %>"> &#9873; Flag </button><button class="mute-player" data-playerid="<%= id %>"> Mute </button></div>');
 
-        _.each(okdice.players().list, function(player) {
+        _.each(okdice.players.list, function(player) {
             var control = $(btnsTemplate(player));
             control.appendTo(player.container);
 
@@ -339,28 +225,28 @@
         });
 
         $(".flag-player").bind('click', function() {
-            var player = okdice.players().get($(this).data('playerid'));
+            var player = okdice.players.get($(this).data('playerid'));
             player.flag();
         });
 
         $(".mute-player").bind('click', function() {
-            var player = okdice.players().get($(this).data('playerid'));
+            var player = okdice.players.get($(this).data('playerid'));
             player.mute();
         });
 
     };
 
-    okdice.flagButtons = function(container) {
+    var loadFlagButtons = function(container) {
 
-        var btns = $('<ul class="flag_btn_collection"></ul>');
+        var btns = $('<ul class="flags"></ul>');
 
-        _.each(okdice.colors, function(color, index) {
+        _.each(okdice.colors.names, function(color, index) {
 
             var b = $('<li>&#9873;</li>');
-            b.data('txt', 'Flag ' + color);
+            b.data('txt', 'Flag ' + color.charAt(0).toUpperCase() + color.slice(1));
 
             b.css({
-                "color": okdice.rgb[index]
+                "color": okdice.colors.rgb[index]
             });
 
             btns.append(b);
@@ -368,7 +254,7 @@
         });
 
         $("li", btns).bind("click", function() {
-            okdice.say($(this).data("txt"));
+            okdice.actions.say($(this).data("txt"));
             $(this).addClass("flagged");
         });
 
@@ -376,7 +262,7 @@
 
     };
 
-    okdice.tableSelector = function() {
+    var loadTableSelector = function() {
 
 
         var optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %> table</span> </option>');
@@ -432,7 +318,120 @@
 
         });
 
+    };
+
+    var loadPlayers = function() {
+
+        var player = function(id) {
+            return {
+                id: id,
+                color: okdice.colors.names[id],
+                hex: okdice.colors.lightrgb[id],
+                container: $(".iogc-PlayerPanel" + id),
+                name: $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text(),
+                review: function(text) {
+                    // post this as a review of this player
+                },
+                flag: function() {
+                    okdice.actions.say("Flag " + this.name);
+                },
+                mute: function() {
+                    okdice.actions.say("/mute " + this.name);
+                    okdice.actions.say("Player " + this.name + " has been muted.");
+                },
+                unmute: function() {
+                    okdice.actions.say("/unmute " + this.name);
+                    okdice.actions.say("Player " + this.name + " has been unmuted.");
+                }
+            };
+        };
+
+        var list = _.map(_.range(7), function(id) {
+            return player(id);
+        });
+
+        var loadContainers = function(id) {
+            if (id) {
+                return list[id].container;
+            }
+            return _.pluck(list, 'container');
+        };
+
+        var loadCurrent = function() {
+            var name = $(".iogc-LoginPanel-nameHeading").text() || false;
+            if (name) {
+                okdice.status.loggedIn = true;
+            }
+            return name;
+        }
+
+        return {
+            player: player,
+            list: list,
+            containers: loadContainers,
+            get: function(id) {
+                if (id) {
+                    return list[id];
+                }
+                return list;
+            },
+            current: loadCurrent
+        };
     }
+
+    var loadActions = function() {
+
+        var say = function(message) {
+            okdice.ui.chatinput.val(message.toString());
+            okdice.ui.chatsendbutton.click();
+        };
+
+        var focus = function() {
+            okdice.ui.chatinput.focus();
+        };
+
+        var sit = function(table) {
+            if (table) {
+                window.location = "#" + table;
+            }
+            okdice.sitInButton.click();
+        }
+
+        var stand = function() {
+            okdice.ui.sitOutButton.click();
+        }
+
+        var endturn = function() {
+            this.ui.gamecontrols.find("button").each(function() {
+                if ($(this).html() === "End Turn" && $(this).is(":visible")) {
+                    $(this).click();
+                    console.log("Ended turn");
+                }
+            });
+        }
+
+        var move = function(table) {
+            window.location = "#" + table;
+        }
+
+
+        return {
+            say: say,
+            focus: focus,
+            stand: stand,
+            sit: sit,
+            endturn: endturn,
+            move: move
+        }
+    }
+
+
+
+    /**
+        add UI features
+     **/
+
+
 
     okdice.linkifyChat = function(text) {
         // bind to chat window
@@ -460,7 +459,7 @@
 
     };
 
-    okdice.theme = function(options) {
+    var loadTheme = function(options) {
 
         var themeOptions = options.theme || {};
 
@@ -468,7 +467,7 @@
             // do the theming
             if (themeOptions.hideHeader) {
                 var menu = $('#iogc-regularMenu').clone();
-                okdice.ui('header').addClass('nope').after( menu );
+                okdice.ui.header.addClass('nope').after(menu);
 
             }
 
@@ -478,7 +477,7 @@
                 });
             }
 
-            _.each(okdice.players().list, function(player) {
+            _.each(okdice.players.list, function(player) {
 
                 player.container.css({
                     "background-color": player.hex,
