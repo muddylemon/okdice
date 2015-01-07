@@ -1,12 +1,14 @@
 <!doctype html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
         <!-- endbower -->
         <!-- endbuild -->
         <!-- build:css styles/main.css -->
         <link href="styles/main.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
         <!-- endbuild -->
     </head>
     <body>
@@ -14,24 +16,48 @@
         <!-- bower:js -->
         <!-- endbower -->
         <!-- endbuild -->
-        <div class="container">
-            <h1>okdice <small>The awesome, extensible kdice upgrade</small></h1>
-            <fieldset class="chat-buttons">
-                <legend>Chat Buttons <button class="add-chat"> + Add A Button </button> </legend>
-            </fieldset>
-            <fieldset class="options-config">
-                <legend>Theme Options</legend>
-                <label><input type="checkbox" name="showHeader"> Show Header</label>
-                <label><input type="checkbox" name="colorizePlayers"> Colorize Players</label>
-            </fieldset>
-            <fieldset class="submit-buttons">
-                <button class="save-button">Save Changes</button>
-            </fieldset>
+        <div class="pure-g">
+            <div class="pure-u-1-24"></div>
+            <div class="pure-u-23-24">
+                <h1>okdice <small>The awesome, extensible kdice upgrade</small></h1>
+            </div>
+            <div class="pure-u-1-24"></div>
+            <div class="pure-u-6-24 pure-form">
+                <fieldset class="activate-okdice">
+                    <h2>Activate Okdice</h2>
+
+                    <label  class="pure-checkbox" for="activeOkdice"><input type="checkbox" id="activeOkdice"> Check This To Activate Okdice</label>
+
+                    <label  class="pure-checkbox" for="debug"><input type="checkbox" id="debug"> Run Okdice in debug mode</label>
+
+                </fieldset>
+                <fieldset class="options-config">
+                    <h2>Theme Options</h2>
+
+                    <label for="themeActive" class="pure-checkbox"><input type="checkbox" id="themeActive"> Activate Theme</label>
+                    <label class="pure-checkbox"><input type="checkbox" id="hideHeader"> Hide Header</label>
+                    <label class="pure-checkbox"><input type="checkbox" id="leftAlign"> Left Align</label>
+
+                    <label class="pure-checkbox"><input type="checkbox" id="colorizePlayers"> Colorize Players</label>
+
+                    <label class="pure-checkbox"><input type="checkbox" id="showNativeAet"> Show Native Auto End Turn Button</label>
+
+
+                </fieldset>
+                <fieldset class="submit-buttons">
+                    <button class="save-button pure-button pure-button-primary">Save Changes</button>
+                </fieldset>
+            </div>
+            <div class="pure-u-12-24 pure-form">
+                <h2>Chat Buttons <button class="pure-button add-chat"> + Add Chat Button </button></h2>
+
+            <fieldset class="chat-buttons"></fieldset>
         </div>
-        <!-- build:js scripts/options.js -->
-        <script src="scripts/underscore.js"></script>
-        <script src="scripts/jquery.js"></script>
-        <script src="scripts/options.js"></script>
-        <!-- endbuild -->
-    </body>
+    </div>
+    <!-- build:js scripts/options.js -->
+    <script src="scripts/underscore.js"></script>
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/options.js"></script>
+    <!-- endbuild -->
+</body>
 </html>

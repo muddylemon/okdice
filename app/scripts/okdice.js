@@ -5,7 +5,7 @@
 // use of this source code is governed by a MIT license
 //
 
-(function() {
+(function(_, $, Backbone) {
 
 
     okdice = {
@@ -23,6 +23,7 @@
             loaded: false,
             loggedIn: false,
             playing: false,
+            isGameRunning: false,
             myTurn: false,
             flagged: false,
             autoend: false
@@ -58,10 +59,15 @@
         }
     };
 
+    _.extend(okdice, Backbone.Events);
 
     okdice.start = function(options) {
 
         var opts = _.extend(okdice.options, options);
+
+        okdice.on("all", function(eventName) {
+            console.log("Event:" + eventName);
+        });
 
         if (opts.active === false) {
             console.log("okdice setting: options.active is false, shutting down");
@@ -69,6 +75,7 @@
         }
 
         okdice.ui = (function() {
+
             return {
                 game: $("#KGame"),
                 gametable: $(".iogc-GameWindow-table"),
@@ -167,7 +174,7 @@
             }
 
             var endturn = function() {
-                this.ui.gamecontrols.find("button").each(function() {
+                okdice.ui.gamecontrols.find("button").each(function() {
                     if ($(this).html() === "End Turn" && $(this).is(":visible")) {
                         $(this).click();
                         console.log("Ended turn");
@@ -188,30 +195,6 @@
                 endturn: endturn,
                 move: move
             }
-        })();
-
-        okdice.events = (function() {
-            var isGameRunning = false,
-                isMyTurn = false;
-
-            return {
-                game: {
-                    start: function() {
-                        isGameRunning = true;
-                    },
-                    end: function() {
-                        isGameRunning = false;
-                    }
-                },
-                turn: {
-                    start: function() {
-                        isMyTurn = true;
-                    },
-                    end: function() {
-                        isMyTurn = false;
-                    }
-                }
-            };
         })();
 
         loadTheme(opts);
@@ -235,7 +218,7 @@
             autoend: function() {
                 if (okdice.aet && okdice.aet.is(":checked")) {
                     okdice.status.autoend = true;
-                    okdice.actions.endTurn();
+                    okdice.actions.endturn();
                 }
                 return this;
             },
@@ -247,8 +230,24 @@
             },
             game: function() {
 
-                if ($(".iogc-GameWindow-status").text().indexOf('running') !== false) {
+                var status = $(".iogc-GameWindow-status").text();
 
+                if (status.indexOf('running') > 0) {
+
+                    if (okdice.status.isGameRunning === false) {
+                        okdice.trigger("game:start");
+                        okdice.status.isGameRunning = true;
+                    }
+                }
+
+                if (status.indexOf('waiting') > 0) {
+
+                    if (okdice.status.isGameRunning === true) {
+                        // not any more it's not!
+                        okdice.trigger("game:end");
+
+                        okdice.status.isGameRunning = false;
+                    }
                 }
 
                 return this;
@@ -258,12 +257,20 @@
                 $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
                     var el = $(this);
 
-                    el.html(
-                        Autolinker.link(el.html(), {
+                    var content = el.find(".gwt-HTML").html();
+                    var semi = content.indexOf(":");
+
+                    if (semi) {
+                        var originalMsg = content.substring(semi);
+                        var replacedMsg = Autolinker.link(originalMsg, {
                             newWindow: true,
                             truncate: 50
-                        })
-                    );
+                        });
+
+                        el.find(".gwt-HTML").html(content.substring(0, semi) + replacedMsg);
+
+                    }
+
                     el.addClass('okdiced');
                 });
                 return this;
@@ -273,6 +280,7 @@
         return function() {
             processes.autoend()
                 .turn()
+                .game()
                 .chat();
         }
 
@@ -288,13 +296,41 @@
     function loadButtons(options) {
 
         var park = $('<div class="btn_park"></div>').appendTo(okdice.ui.sidebar);
-        park.append('<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>');
-        okdice.aet = $("#aet");
 
+
+        loadOptionsLink(park);
+        loadAutoEndTurnButton(park);
         loadTableSelector();
         loadFlagButtons(park);
         loadPlayerButtons();
         loadChatButtons(options);
+
+
+        function loadOptionsLink(container) {
+            var optionsLink = '<div class="text-right"><a href="' + chrome.extension.getURL("options.html") + '" target="_blank"><small>okdice options</small></a></div> ';
+
+            container.after(optionsLink);
+        }
+
+
+        function loadAutoEndTurnButton(container) {
+
+            container.append('<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>');
+
+            okdice.aet = $("#aet");
+
+            okdice.aet.bind('change', function() {
+                okdice.trigger("aet:change", okdice.aet.is('checked'));
+            });
+
+            okdice.on("game:start game:end change:table", function() {
+                okdice.aet.prop('checked', false);
+            });
+
+            okdice.on("aet:change", function(isChecked) {
+
+            })
+        }
 
 
         function loadChatButtons(options) {
@@ -362,6 +398,10 @@
                 $(this).addClass("flagged");
             });
 
+            okdice.on("game:start game:end change:table", function() {
+                $(".flagged").removeClass("flagged");
+            });
+
             container.append(btns);
         }
 
@@ -416,6 +456,8 @@
                 var tableName = $(this).val();
                 if (tableName) {
                     window.location = "#" + tableName;
+                    okdice.trigger("table:change", tableName);
+
                 }
                 loadTables($(this));
 
@@ -426,6 +468,10 @@
     function loadTheme(options) {
 
         var themeOptions = options.theme || {};
+
+        if (themeOptions.showNativeAet) {
+            okdice.ui.gamecontrols.find('.gwt-CheckBox').show();
+        }
 
         if (themeOptions.active) {
             // do the theming
@@ -456,4 +502,4 @@
     }
 
     return okdice;
-})();
+})(_, jQuery, Backbone);
