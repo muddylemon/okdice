@@ -113,6 +113,13 @@ button.danger {
 
 /* options page */
 
+.save-alert {
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: bolder;
+    background-color: #dff0d8;
+}
+
 .container {
     width: 600px;
     margin: 20px auto;

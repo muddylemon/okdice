@@ -31,7 +31,7 @@ $(function() {
                     "label": "gt",
                 }, {
                     "text": "gl 2 all friends lets warrr",
-                    "label": "gl",
+                    "label": "gadbois",
                 }],
                 theme: {
                     active: true,
@@ -114,6 +114,14 @@ $(function() {
         chrome.storage.sync.set({
             'config': config
         }, function() {
+
+            var alert = $('<div class="save-alert">Settings Saved! Good Luck!</div>');
+
+            alert.appendTo(".submit-buttons");
+            setTimeout(function(){
+                alert.fadeOut('slow');
+            }, 5000)
+
 
             console.log('okdice configuration saved');
         });
