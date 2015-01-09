@@ -9,9 +9,41 @@ $(function() {
     chrome.storage.sync.get('config', function(stored) {
 
         console.log("Stored Config", stored.config);
+        if (!stored.config) {
+            stored.config = {
+                active: true,
+                debug: true,
+                beatpace: 1200,
+                chatbuttons: [{
+                    "text": "thank you",
+                    "label": "ty",
+                }, {
+                    "text": "yes",
+                    "label": "y",
+                }, {
+                    "text": "no",
+                    "label": "n",
+                }, {
+                    "text": "gg",
+                    "label": "gg",
+                }, {
+                    "text": "gt",
+                    "label": "gt",
+                }, {
+                    "text": "gl 2 all friends lets warrr",
+                    "label": "gl",
+                }],
+                theme: {
+                    active: true,
+                    hideHeader: true,
+                    fontsize: "14px"
+                }
+            };
 
-        $("#activeOkdice").prop('checked', stored.config.active );
-        $("#debug").prop('checked', stored.config.debug );
+        }
+
+        $("#activeOkdice").prop('checked', stored.config.active);
+        $("#debug").prop('checked', stored.config.debug);
 
         _.each(stored.config.chatbuttons, function(c) {
             $(".chat-buttons").append(
@@ -19,7 +51,7 @@ $(function() {
             );
         });
 
-        _.each(stored.config.theme, function(val, key){
+        _.each(stored.config.theme, function(val, key) {
             if (key === 'active') {
                 $("#themeActive").prop('checked', val);
             }
@@ -31,7 +63,7 @@ $(function() {
 
 
     $(".add-chat").bind('click', function() {
-        $(".chat-buttons").append(chatButtonTemplate('',''));
+        $(".chat-buttons").append(chatButtonTemplate('', ''));
     });
 
     $(".save-button").bind('click', function() {
