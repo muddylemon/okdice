@@ -95,17 +95,23 @@
         okdice.players = (function() {
 
             var player = function(id) {
+
+                var name = (function (id) {
+                    return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
+                })(id);
+
+
                 return {
                     id: id,
                     color: okdice.colors.names[id],
                     hex: okdice.colors.lightrgb[id],
                     container: $(".iogc-PlayerPanel" + id),
-                    name: $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text(),
+                    name: name,
                     review: function(text) {
                         // post this as a review of this player
                     },
                     flag: function() {
-                        okdice.actions.say("Flag " + this.name);
+                        okdice.actions.say("Flag " + this.color);
                     },
                     mute: function() {
                         okdice.actions.say("/mute " + this.name);
@@ -349,7 +355,7 @@
 
         function loadPlayerButtons() {
 
-            var btnsTemplate = _.template('<div class="player_btn_collection"><button class="flag-player" data-txt="Flag <%= color %>"> &#9873; Flag </button><button class="mute-player" data-playerid="<%= id %>"> Mute </button></div>');
+            var btnsTemplate = _.template('<div class="player_btn_collection"><button class="flag-player" data-playerid="<%= id %>"> &#9873; Flag </button><button class="mute-player" data-playerid="<%= id %>"> Mute </button></div>');
 
             _.each(okdice.players.list, function(player) {
                 var control = $(btnsTemplate(player));
