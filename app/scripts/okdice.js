@@ -96,7 +96,7 @@
 
             var player = function(id) {
 
-                var name = (function (id) {
+                var name = (function(id) {
                     return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
                 })(id);
 
@@ -194,7 +194,7 @@
 
 
             return {
-                say: say,
+                say: _.throttle(say, 2000),
                 focus: focus,
                 stand: stand,
                 sit: sit,
@@ -270,7 +270,7 @@
                         var originalMsg = content.substring(semi);
                         var replacedMsg = Autolinker.link(originalMsg, {
                             newWindow: true,
-                            truncate: 50
+                            truncate: 45
                         });
 
                         el.find(".gwt-HTML").html(content.substring(0, semi) + replacedMsg);
@@ -306,7 +306,9 @@
 
         loadOptionsLink(park);
         loadAutoEndTurnButton(park);
-        loadTableSelector();
+        loadTableSelector({
+            container: park
+        });
         loadFlagButtons(park);
         loadPlayerButtons();
         loadChatButtons(options);
@@ -314,10 +316,8 @@
 
         function loadOptionsLink(container) {
             var optionsLink = '<div class="text-right"><a href="' + chrome.extension.getURL("options.html") + '" target="_blank"><small>okdice options</small></a></div> ';
-
             container.after(optionsLink);
         }
-
 
         function loadAutoEndTurnButton(container) {
 
@@ -334,7 +334,7 @@
             });
 
             okdice.on("aet:change", function(isChecked) {
-
+                console.log("aet", isChecked);
             })
         }
 
@@ -411,26 +411,36 @@
             container.append(btns);
         }
 
-        function loadTableSelector() {
+        function loadTableSelector(options) {
+
+            var container = options.container || $(".iogc-GameWindow-commands").find("tr");
 
 
-            var optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %> table</span> </option>');
+            var optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %> table</span> </option>'),
+                currentTable = window.location.hash,
+                categoryClassMap = {
+                    "2": "0",
+                    "3": "100",
+                    "4": "500",
+                    "5": "2000",
+                    "6": "5000"
+                },
+                select = $('<select class="table-selector"><option value="" class="default-option">Change Table</option></select>');
 
-            var categoryClassMap = {
-                "2": "0",
-                "3": "100",
-                "4": "500",
-                "5": "2000",
-                "6": "5000"
-            };
+            // attach the select element to the top bar
+            container.append($("<td>").append(select));
 
-            var loadTables = function(select) {
+
+            function loadTables(ev) {
 
                 $.ajax({
                         url: 'http://kdice.com/api/kdice/tables',
                         type: 'GET',
                     })
                     .done(function(data) {
+
+                    var tables = _.sortBy(data.tables, 'playerCount')
+
                         var rows = _.map(data.tables, function(table) {
                             if (table.state == 0) {
 
@@ -446,28 +456,25 @@
 
                         }
                     });
-            };
+            }
 
-            var select = $('<select class="table-selector"><option value="" class="default-option">Change Table</option></select>');
-            var selectWrapper = $("<td>").append(select);
-            $(".iogc-GameWindow-commands").find("tr").append(selectWrapper);
+            // don't allow the tables to be reloaded more than once every 5 seconds
+            var reload = _.throttle(loadTables, 5000);
 
-            loadTables(select);
-
-            select.bind('focus', function() {
-                loadTables($(this));
+            container.bind('mouseover', function() {
+                reload();
             });
 
             select.bind('change', function() {
                 var tableName = $(this).val();
-                if (tableName) {
+                if (tableName && tableName !== currentTable) {
                     window.location = "#" + tableName;
                     okdice.trigger("table:change", tableName);
-
                 }
-                loadTables($(this));
-
+                reload();
             });
+            // and one for the road
+            reload();
         }
     }
 

@@ -1,8 +1,4 @@
 
-center {   /*ha ha*/
-    text-align: left;
-}
-
 .gwt-DialogBox {
     margin-left: -100px;
 }
@@ -100,10 +96,12 @@ button.danger {
 }
 
 .table-selector {
-    margin: 3px 10px;
-    font-size: 1.2em;
+    margin: 3px 0;
+    font-size: 1.1em;
 }
-
+.table-selector option {
+    margin: 0;
+}
 .opt-desc {
     font-weight: bolder;
 }
