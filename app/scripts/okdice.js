@@ -192,7 +192,7 @@
                 window.location = "#" + table;
             }
 
-
+            // say is throttled to execute no more than once every 2 seconds
             return {
                 say: _.throttle(say, 2000),
                 focus: focus,
@@ -439,9 +439,11 @@
                     })
                     .done(function(data) {
 
-                    var tables = _.sortBy(data.tables, 'playerCount')
+                        var tables = _.sortBy(data.tables, function(table) {
+                            return -table.playerCount;
+                        });
 
-                        var rows = _.map(data.tables, function(table) {
+                        var rows = _.map(tables, function(table) {
                             if (table.state == 0) {
 
                                 table.desc = categoryClassMap[table.category_id];
@@ -482,6 +484,8 @@
 
         var themeOptions = options.theme || {};
 
+        console.log("theme opts", themeOptions);
+
         if (themeOptions.showNativeAet) {
             okdice.ui.gamecontrols.find('.gwt-CheckBox').show();
         }
@@ -490,7 +494,8 @@
             // do the theming
             if (themeOptions.hideHeader) {
                 var menu = $('#iogc-regularMenu').clone();
-                okdice.ui.header.addClass('nope').after(menu);
+                okdice.ui.header.addClass('nope');
+                okdice.ui.game.after(menu);
 
             }
 
@@ -500,15 +505,19 @@
                 });
             }
 
-            _.each(okdice.players.list, function(player) {
+            if (themeOptions.colorizePlayers) {
 
-                player.container.css({
-                    "background-color": player.hex,
-                    "border": "5px solid " + player.hex,
-                    "border-collapse": "separate"
-                }).addClass("player-" + player.color);
+                _.each(okdice.players.list, function(player) {
 
-            });
+                    player.container.css({
+                        "background-color": player.hex,
+                        "border": "5px solid " + player.hex,
+                        "border-collapse": "separate"
+                    }).addClass("player-" + player.color);
+
+                });
+            }
+
 
 
         }
