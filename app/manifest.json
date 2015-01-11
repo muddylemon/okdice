@@ -25,7 +25,9 @@
         {
             "matches": [
                 "http://kdice.com/*",
-                "https://kdice.com/*"
+                "https://kdice.com/*",
+                "http://*.kdice.com/*",
+                "https://*.kdice.com/*"
             ],
             "css": [
                 "styles/main.css"

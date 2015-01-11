@@ -148,7 +148,8 @@
                 list: list,
                 containers: loadContainers,
                 get: function(id) {
-                    if (id) {
+
+                    if (typeof id !== 'undefined') {
                         return list[id];
                     }
                     return list;
@@ -266,7 +267,9 @@
                     var content = el.find(".gwt-HTML").html();
                     var semi = content.indexOf(":");
 
+
                     if (semi) {
+
                         var originalMsg = content.substring(semi);
                         var replacedMsg = Autolinker.link(originalMsg, {
                             newWindow: true,
@@ -274,6 +277,37 @@
                         });
 
                         el.find(".gwt-HTML").html(content.substring(0, semi) + replacedMsg);
+
+
+                    // var author = el.find("b").first().html();
+
+                    // var speakingPlayer = _.findWhere(okdice.players.list, function(player){
+                    //     return (author == player.name);
+                    // });
+
+
+                    // var chatBubbleTemplate = _.template('<p class="triangle-border top"><%= msg %></p>');
+
+
+                    // if (author) {
+                    //     console.log(author);
+
+                    //     var chatBubble = $(chatBubbleTemplate({msg: replacedMsg}));
+                    //     console.log(chatBubble);
+                    //     console.log(speakingPlayer);
+
+                    //     console.log(speakingPlayer.container)
+
+                    //     speakingPlayer.container.after(chatBubble);
+
+                    //     chatBubble.fadeOut('slow', function(){
+                    //         $(this).remove();
+                    //     })
+                    // }
+
+
+
+
 
                     }
 
