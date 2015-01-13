@@ -279,33 +279,31 @@
                         el.find(".gwt-HTML").html(content.substring(0, semi) + replacedMsg);
 
 
-                    // var author = el.find("b").first().html();
+                        // var author = el.find("b").first().html();
 
-                    // var speakingPlayer = _.findWhere(okdice.players.list, function(player){
-                    //     return (author == player.name);
-                    // });
-
-
-                    // var chatBubbleTemplate = _.template('<p class="triangle-border top"><%= msg %></p>');
+                        // var speakingPlayer = _.findWhere(okdice.players.list, function(player){
+                        //     return (author == player.name);
+                        // });
 
 
-                    // if (author) {
-                    //     console.log(author);
-
-                    //     var chatBubble = $(chatBubbleTemplate({msg: replacedMsg}));
-                    //     console.log(chatBubble);
-                    //     console.log(speakingPlayer);
-
-                    //     console.log(speakingPlayer.container)
-
-                    //     speakingPlayer.container.after(chatBubble);
-
-                    //     chatBubble.fadeOut('slow', function(){
-                    //         $(this).remove();
-                    //     })
-                    // }
+                        // var chatBubbleTemplate = _.template('<p class="triangle-border top"><%= msg %></p>');
 
 
+                        // if (author) {
+                        //     console.log(author);
+
+                        //     var chatBubble = $(chatBubbleTemplate({msg: replacedMsg}));
+                        //     console.log(chatBubble);
+                        //     console.log(speakingPlayer);
+
+                        //     console.log(speakingPlayer.container)
+
+                        //     speakingPlayer.container.after(chatBubble);
+
+                        //     chatBubble.fadeOut('slow', function(){
+                        //         $(this).remove();
+                        //     })
+                        // }
 
 
 
@@ -518,8 +516,6 @@
 
         var themeOptions = options.theme || {};
 
-        console.log("theme opts", themeOptions);
-
         if (themeOptions.showNativeAet) {
             okdice.ui.gamecontrols.find('.gwt-CheckBox').show();
         }
@@ -527,9 +523,8 @@
         if (themeOptions.active) {
             // do the theming
             if (themeOptions.hideHeader) {
-                var menu = $('#iogc-regularMenu').clone();
                 okdice.ui.header.addClass('nope');
-                okdice.ui.game.after(menu);
+
 
             }
 

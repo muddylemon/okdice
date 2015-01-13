@@ -3,15 +3,6 @@
     margin-left: -100px;
 }
 
-.iogc-ChatPanel .gwt-TextBox {
-    color: #600;
-    font-size:1.4em;
-}
-
-.iogc-ChatPanel .iogc-ChatPanel-messages div {
-    font-size: 1.1em;
-}
-
 .nope {
     display: none;
 }

@@ -56,6 +56,10 @@ $(function() {
                 $("#themeActive").prop('checked', val);
             }
 
+            // if (key === 'fontsize') {
+            //     $("#fontsize").val(val);
+            // }
+
             $("#" + key).prop('checked', val);
         });
     });
@@ -107,7 +111,7 @@ $(function() {
             theme.hideHeader = $("#hideHeader").is(":checked");
             theme.colorizePlayers = $("#colorizePlayers").is(":checked");
             theme.showNativeAet = $("#showNativeAet").is(":checked");
-
+            // theme.fontsize =  parseInt($("#fontsize").val());
             return theme;
         }
 
