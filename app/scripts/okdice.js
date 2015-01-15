@@ -149,7 +149,7 @@
                 containers: loadContainers,
                 get: function(id) {
 
-                    if (typeof id !== 'undefined') {
+                    if (!_.isUndefined(id)) {
                         return list[id];
                     }
                     return list;
