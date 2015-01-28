@@ -9,7 +9,7 @@
 
 
     okdice = {
-        version: "0.0.2",
+        version: "0.0.16",
         colors: {
             names: ["red", "green", "purple", "yellow", "blue", "brown", "teal"],
             lightrgb: ["#e5bfcb", "#84ba96", "#A884BA", "#baba84", "#8484ba", "#BA9684", "#84BABA"],
@@ -96,19 +96,32 @@
 
             var player = function(id) {
 
+                var container = $(".iogc-PlayerPanel" + id);
+
                 var name = (function(id) {
                     return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
                 })(id);
 
+                var kdiceId = (function(id) {
+                    var href = $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name a').href();
+                    return href.replace('/profile/', '');
+                })
+
 
                 return {
                     id: id,
+                    kdiceId: kdiceId,
                     color: okdice.colors.names[id],
                     hex: okdice.colors.lightrgb[id],
-                    container: $(".iogc-PlayerPanel" + id),
+                    container: container,
                     name: name,
                     review: function(text) {
                         // post this as a review of this player
+                        chrome.extension.sendRequest({
+                            'kdiceId': kdiceId,
+                            'cid': '',
+                            'review': text
+                        }, callback);
                     },
                     flag: function() {
                         okdice.actions.say("Flag " + this.color);
