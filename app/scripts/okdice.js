@@ -537,8 +537,9 @@
             // do the theming
             if (themeOptions.hideHeader) {
                 okdice.ui.header.addClass('nope');
-
-
+                $("#iogc-regularMenu").css({
+                    'margin-top':'30px'
+                });
             }
 
             if (themeOptions.leftAlign) {
