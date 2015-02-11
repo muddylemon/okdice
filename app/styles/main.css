@@ -70,10 +70,13 @@ button.danger {
     display:none;
 }
 
-.player_btn_collection button {
-    display: inline-block;
+.player_btn_collection button, .player_btn_collection a {
+    display: block;
     font-size: 12px;
     padding: 2px 4px;
+    width: 60px;
+    margin: 5px;
+
 }
 
 .btn_park {

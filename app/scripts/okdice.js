@@ -7,7 +7,7 @@
 
 (function(_, $, Backbone) {
 
-
+    // WE'LL DO IT GLOBAL (and sandboxed)
     okdice = {
         version: "0.0.16",
         colors: {
@@ -74,148 +74,11 @@
             return;
         }
 
-        okdice.ui = (function() {
+        okdice.actions = loadActions(opts);
+        okdice.ui = loadUi(opts);
+        okdice.players = loadPlayers(opts);
+        okdice.beat = beat();
 
-            return {
-                game: $("#KGame"),
-                gametable: $(".iogc-GameWindow-table"),
-                gamecontrols: $(".iogc-Controls"),
-                sidebar: $("#iogc-PlayerPanel"),
-                header: $("#hd"),
-                chatbox: $(".iogc-ChatPanel"),
-                chatinput: $(".iogc-ChatPanel .gwt-TextBox"),
-                chatsendbutton: $(".iogc-ChatPanel").find(".iogc-NewButton"),
-                chatmessages: $(".iogc-ChatPanel").find(".iogc-ChatPanel-messages"),
-                tablelist: $(".iogc-ScrollTable-table"),
-                sitOutButton: $(".iogc-GameWindow-sitOutButton"),
-                sitInButton: $(".iogc-GameWindow-sitDownButton")
-            }
-        })();
-
-        okdice.players = (function() {
-
-            var player = function(id) {
-
-                var container = $(".iogc-PlayerPanel" + id);
-
-                var name = (function(id) {
-                    return $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name').text();
-                })(id);
-
-                var kdiceId = (function(id) {
-                    var href = $(".iogc-PlayerPanel" + id).find('.iogc-PlayerPanel-name a').href();
-                    return href.replace('/profile/', '');
-                })
-
-
-                return {
-                    id: id,
-                    kdiceId: kdiceId,
-                    color: okdice.colors.names[id],
-                    hex: okdice.colors.lightrgb[id],
-                    container: container,
-                    name: name,
-                    review: function(text) {
-                        // post this as a review of this player
-                        chrome.extension.sendRequest({
-                            'kdiceId': kdiceId,
-                            'cid': '',
-                            'review': text
-                        }, callback);
-                    },
-                    flag: function() {
-                        okdice.actions.say("Flag " + this.color);
-                    },
-                    mute: function() {
-                        okdice.actions.say("/mute " + this.name);
-                        okdice.actions.say("Player " + this.name + " has been muted.");
-                    },
-                    unmute: function() {
-                        okdice.actions.say("/unmute " + this.name);
-                        okdice.actions.say("Player " + this.name + " has been unmuted.");
-                    }
-                };
-            };
-
-            var list = _.map(_.range(7), function(id) {
-                return player(id);
-            });
-
-            var loadContainers = function(id) {
-                if (id) {
-                    return list[id].container;
-                }
-                return _.pluck(list, 'container');
-            };
-
-            var loadCurrent = function() {
-                var name = $(".iogc-LoginPanel-nameHeading").text() || false;
-                if (name) {
-                    okdice.status.loggedIn = true;
-                }
-                return name;
-            }
-
-            return {
-                player: player,
-                list: list,
-                containers: loadContainers,
-                get: function(id) {
-
-                    if (!_.isUndefined(id)) {
-                        return list[id];
-                    }
-                    return list;
-                },
-                current: loadCurrent
-            };
-        })();
-
-        okdice.actions = (function() {
-
-            var say = function(message) {
-                okdice.ui.chatinput.val(message.toString());
-                okdice.ui.chatsendbutton.click();
-            };
-
-            var focus = function() {
-                okdice.ui.chatinput.focus();
-            };
-
-            var sit = function(table) {
-                if (table) {
-                    window.location = "#" + table;
-                }
-                okdice.ui.sitInButton.click();
-            }
-
-            var stand = function() {
-                okdice.ui.sitOutButton.click();
-            }
-
-            var endturn = function() {
-                okdice.ui.gamecontrols.find("button").each(function() {
-                    if ($(this).html() === "End Turn" && $(this).is(":visible")) {
-                        $(this).click();
-                        console.log("Ended turn");
-                    }
-                });
-            }
-
-            var move = function(table) {
-                window.location = "#" + table;
-            }
-
-            // say is throttled to execute no more than once every 2 seconds
-            return {
-                say: _.throttle(say, 2000),
-                focus: focus,
-                stand: stand,
-                sit: sit,
-                endturn: endturn,
-                move: move
-            }
-        })();
 
         loadTheme(opts);
         loadButtons(opts);
@@ -226,11 +89,152 @@
 
         window.setInterval(okdice.beat, opts.beatpace || 1000);
 
-    };
+    }
+
+    function loadActions() {
+
+        var say = function(message) {
+            okdice.ui.chatinput.val(message.toString());
+            okdice.ui.chatsendbutton.click();
+        };
+
+        var focus = function() {
+            okdice.ui.chatinput.focus();
+        };
+
+        var sit = function(table) {
+            if (table) {
+                window.location = "#" + table;
+            }
+            okdice.ui.sitInButton.click();
+        }
+
+        var stand = function() {
+            okdice.ui.sitOutButton.click();
+        }
+
+        var endturn = function() {
+            okdice.ui.gamecontrols.find("button").each(function() {
+                if ($(this).html() === "End Turn" && $(this).is(":visible")) {
+                    $(this).click();
+                    console.log("Ended turn");
+                }
+            });
+        }
+
+        var move = function(table) {
+            window.location = "#" + table;
+        }
+
+        // say is throttled to execute no more than once every 2 seconds
+        return {
+            say: _.throttle(say, 2000),
+            focus: focus,
+            stand: stand,
+            sit: sit,
+            endturn: endturn,
+            move: move
+        }
+    }
 
 
+    function loadPlayers() {
 
-    okdice.beat = (function() {
+        var player = function(id) {
+
+            var container = $(".iogc-PlayerPanel" + id);
+
+            var name = container.find('.iogc-PlayerPanel-name').text();
+            var profileUrl = container.find('.iogc-PlayerPanel-name').find('a').attr('href') || '';
+            var kdiceId = profileUrl.replace('/profile/', '');
+
+            return {
+                id: id,
+                kdiceId: kdiceId,
+                color: okdice.colors.names[id],
+                hex: okdice.colors.lightrgb[id],
+                container: container,
+                name: name,
+                profileUrl: profileUrl,
+                review: function(text) {
+                    // post this as a review of this player
+                    chrome.extension.sendRequest({
+                        'kdiceId': kdiceId,
+                        'cid': '',
+                        'review': text
+                    }, callback);
+                },
+                flag: function() {
+                    okdice.actions.say("Flag " + this.color);
+                },
+                mute: function() {
+                    okdice.actions.say("/mute " + this.name);
+                    okdice.actions.say("Player " + this.name + " has been muted.");
+                },
+                unmute: function() {
+                    okdice.actions.say("/unmute " + this.name);
+                    okdice.actions.say("Player " + this.name + " has been unmuted.");
+                }
+            };
+        };
+
+        var list = _.map(_.range(7), function(id) {
+            return player(id);
+        });
+
+        var loadContainers = function(id) {
+            if (id) {
+                return list[id].container;
+            }
+            return _.pluck(list, 'container');
+        };
+
+        var loadCurrent = function() {
+            var name = $(".iogc-LoginPanel-nameHeading").text() || false;
+            if (name) {
+                okdice.status.loggedIn = true;
+            }
+            return name;
+        }
+
+        return {
+            player: function (id) {
+                return player(id);
+            },
+            list: list,
+            containers: loadContainers,
+            get: function(id) {
+
+                if (!_.isUndefined(id)) {
+                    return list[id];
+                }
+                return list;
+            },
+            current: loadCurrent
+        };
+    }
+
+
+    function loadUi() {
+
+        return {
+            game: $("#KGame"),
+            gametable: $(".iogc-GameWindow-table"),
+            gamecontrols: $(".iogc-Controls"),
+            sidebar: $("#iogc-PlayerPanel"),
+            header: $("#hd"),
+            chatbox: $(".iogc-ChatPanel"),
+            chatinput: $(".iogc-ChatPanel .gwt-TextBox"),
+            chatsendbutton: $(".iogc-ChatPanel").find(".iogc-NewButton"),
+            chatmessages: $(".iogc-ChatPanel").find(".iogc-ChatPanel-messages"),
+            tablelist: $(".iogc-ScrollTable-table"),
+            sitOutButton: $(".iogc-GameWindow-sitOutButton"),
+            sitInButton: $(".iogc-GameWindow-sitDownButton")
+        }
+    }
+
+
+    function beat() {
 
         okdice.session.cycle++;
 
@@ -342,7 +346,7 @@
         // flip the events toggles
         // call the event functions
         // etc
-    })();
+    }
 
     function loadButtons(options) {
 
@@ -400,7 +404,7 @@
 
         function loadPlayerButtons() {
 
-            var btnsTemplate = _.template('<div class="player_btn_collection"><button class="flag-player" data-playerid="<%= id %>"> &#9873; Flag </button><button class="mute-player" data-playerid="<%= id %>"> Mute </button></div>');
+            var btnsTemplate = _.template('<div class="player_btn_collection"><button class="iogc-NewButton-green iogc-NewButton flag-player" data-playerid="<%= id %>"> &#9873; Flag </button><button class="iogc-NewButton-green iogc-NewButton mute-player" data-playerid="<%= id %>"> Mute </button><button class="iogc-NewButton-green iogc-NewButton profile-player" data-playerid="<%= id %>">Profile</button></div>');
 
             _.each(okdice.players.list, function(player) {
                 var control = $(btnsTemplate(player));
@@ -416,13 +420,23 @@
 
             });
 
-            $(".flag-player").bind('click', function() {
-                var player = okdice.players.get($(this).data('playerid'));
+            $(".profile-player").on('click', function(){
+                var pid = $(this).data('playerid');
+
+                var player = okdice.players.player(pid);
+                var profileUrl = player.profileUrl;
+                console.log(profileUrl, "prp");
+
+                window.open( profileUrl);
+            });
+
+            $(".flag-player").on('click', function() {
+                var player = okdice.players.player($(this).data('playerid'));
                 player.flag();
             });
 
             $(".mute-player").bind('click', function() {
-                var player = okdice.players.get($(this).data('playerid'));
+                var player = okdice.players.player($(this).data('playerid'));
                 player.mute();
             });
         }
@@ -538,7 +552,7 @@
             if (themeOptions.hideHeader) {
                 okdice.ui.header.addClass('nope');
                 $("#iogc-regularMenu").css({
-                    'margin-top':'30px'
+                    'margin-top': '30px'
                 });
             }
 
