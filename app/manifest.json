@@ -37,6 +37,7 @@
                 "bower_components/underscore/underscore.js",
                 "bower_components/backbone/backbone.js",
                 "bower_components/Autolinker.js/dist/Autolinker.js",
+                "bower_components/bacon/dist/Bacon.js",
                 "scripts/okdice.js",
                 "scripts/contentscript.js"
             ],

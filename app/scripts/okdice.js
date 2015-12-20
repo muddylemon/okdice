@@ -5,7 +5,7 @@
 // use of this source code is governed by a MIT license
 //
 
-(function(_, $, Backbone) {
+(function(_, $, Backbone, Bacon) {
 
     // WE'LL DO IT GLOBAL (and sandboxed)
     okdice = {
@@ -61,6 +61,8 @@
 
     _.extend(okdice, Backbone.Events);
 
+
+
     okdice.start = function(options) {
 
         var opts = _.extend(okdice.options, options);
@@ -96,35 +98,30 @@
         var say = function(message) {
             okdice.ui.chatinput.val(message.toString());
             okdice.ui.chatsendbutton.click();
-        };
-
-        var focus = function() {
+        },
+        focus = function() {
             okdice.ui.chatinput.focus();
-        };
-
-        var sit = function(table) {
+        },
+        sit = function(table) {
             if (table) {
                 window.location = "#" + table;
             }
             okdice.ui.sitInButton.click();
-        }
-
-        var stand = function() {
+        },
+        stand = function() {
             okdice.ui.sitOutButton.click();
-        }
-
-        var endturn = function() {
+        },
+        endturn = function() {
             okdice.ui.gamecontrols.find("button").each(function() {
                 if ($(this).html() === "End Turn" && $(this).is(":visible")) {
                     $(this).click();
                     console.log("Ended turn");
                 }
             });
-        }
-
-        var move = function(table) {
+        },
+        move = function(table) {
             window.location = "#" + table;
-        }
+        };
 
         // say is throttled to execute no more than once every 2 seconds
         return {
@@ -581,4 +578,4 @@
     }
 
     return okdice;
-})(_, jQuery, Backbone);
+})(_, jQuery, Backbone, Bacon);
