@@ -235,8 +235,6 @@
 
   function beat() {
 
-    okdice.session.cycle++;
-
     var processes = {
       autoend: function() {
         if (okdice.aet && okdice.aet.is(":checked")) {
@@ -244,6 +242,12 @@
           okdice.actions.endturn();
         }
         return this;
+      },
+      tables: function(){
+          if ((okdice.session.cycle % 3) === 0){
+                okdice.trigger('load:tables');
+          }
+          return this;
       },
       turn: function() {
 
@@ -332,8 +336,11 @@
     };
 
     return function() {
+        okdice.session.cycle++;
+
       processes.autoend()
         .turn()
+        .tables()
         .game()
         .chat();
     }
@@ -474,8 +481,8 @@
       var container = options.container || $(".iogc-GameWindow-commands").find("tr");
 
 
-      var tableTemplate = _.template('<tr><td><a href="#<%= name %>"><%= name %></a></td><td><%= playerCount %></td><td><%= desc %> table</td> </tr>'),
-        optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %> table</span> </option>'),
+      var tableTemplate = _.template('<tr class="pts-<%= desc %>"><td><a href="#<%= name %>"><%= name %></a></td><td><%= playerCount %></td><td><%= desc %></td> </tr>'),
+        optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %></span> </option>'),
         currentTable = window.location.hash,
         categoryClassMap = {
           "2": "0",
@@ -485,7 +492,7 @@
           "6": "5000"
         },
         select = $('<select class="table-selector"><option value="" class="default-option">Change Table</option></select>'),
-        listTable = $('<table class="table striped table-selector"><thead><td>Name</td><td>Players</td><td>Type</td></thead><tbody class="current-tables"></tbody></table>');
+        listTable = $('<table class="table striped table-selector"><thead><td>Name</td><td>Players</td><td>Pts</td></thead><tbody class="current-tables"></tbody></table>');
 
       // attach the select element to the top bar
       container.append($("<td>").append(listTable));
@@ -519,8 +526,10 @@
           });
       }
 
-      // don't allow the tables to be reloaded more than once every 5 seconds
-      var reload = _.throttle(loadTables, 2000);
+      // don't allow the tables to be reloaded more than once every 2 seconds
+      var reload =  _.throttle(loadTables, 2000);
+
+      okdice.on('load:tables', reload);
 
       container.bind('mouseover', function() {
         reload();
