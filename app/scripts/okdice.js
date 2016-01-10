@@ -481,7 +481,7 @@
       var container = options.container || $(".iogc-GameWindow-commands").find("tr");
 
 
-      var tableTemplate = _.template('<tr class="pts-<%= desc %>"><td><a href="#<%= name %>"><%= name %></a></td><td><%= playerCount %></td><td><%= desc %></td> </tr>'),
+      var tableTemplate = _.template('<tr class="pts-<%= desc %>"><td class="table-name"><a href="#<%= name %>"><%= name %></a></td><td class="table-num-players"><%= playerCount %></td><td class="table-min-points"><%= desc.replace("000","k") %></td></tr>'),
         optionTemplate = _.template('<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %></span> </option>'),
         currentTable = window.location.hash,
         categoryClassMap = {
