@@ -34,10 +34,13 @@ chrome.extension.onRequest.addListener(function(request, sender, callback) {
 
 
 chrome.runtime.onInstalled.addListener(function(details) {
-    console.log('previousVersion', details.previousVersion);
 
-    chrome.tabs.create({
-        url: "options.html"
-    });
+    if (details.previousVersion !== chrome.runtime.getManifest().version){
+        chrome.tabs.create({
+            url: "options.html"
+        });
+    }
+
+
 
 });
