@@ -365,7 +365,7 @@
       container: park
     });
     loadFlagButtons(park);
-    loadPlayerButtons();
+    //loadPlayerButtons();
     loadChatButtons(options);
 
 
