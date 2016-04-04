@@ -5,7 +5,7 @@
 // use of this source code is governed by a MIT license
 //
 
-(function(_, $, Backbone) {
+(function(_, $, Backbone, Bacon) {
 
   // WE'LL DO IT GLOBAL (and sandboxed)
   okdice = {
@@ -68,6 +68,8 @@
     okdice.on("all", function(eventName) {
       console.log("Event:" + eventName);
     });
+
+
 
     if (opts.active === false) {
       console.log("okdice setting: options.active is false, shutting down");
@@ -590,4 +592,4 @@
   }
 
   return okdice;
-})(_, jQuery, Backbone);
+})(_, jQuery, Backbone, Bacon);
