@@ -503,7 +503,7 @@
       function loadTables(ev) {
 
         $.ajax({
-            url: 'http://kdice.com/api/kdice/tables',
+            url: 'https://kdice.com/api/kdice/tables',
             type: 'GET',
           })
           .done(function(data) {

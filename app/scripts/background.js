@@ -14,7 +14,7 @@ function addReview(kdiceId, cid, review, callback) {
         }
     }
 
-    xhr.open('POST', 'http://kdice.com/profile/' + kdiceId + '/addReview', true);
+    xhr.open('POST', 'https://kdice.com/profile/' + kdiceId + '/addReview', true);
 
     var params = "prev=/profile/" + kdiceId + "/reviews&cid=&body=" + review;
 

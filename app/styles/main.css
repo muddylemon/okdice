@@ -1,21 +1,18 @@
 .current-tables {
   font-size: .9em;
 }
-
 .table-selector thead {
-    background-color: #CCC;
-    color: #333;
+  background-color: #CCC;
+  color: #333;
 }
-
 .table-name {
-font-weight: bold;
-word-wrap: break-word;
-padding: 3px;
+  font-weight: bold;
+  word-wrap: break-word;
+  padding: 3px;
 }
 .table-num-players {
-    text-align: center;
+  text-align: center;
 }
-
 .pts-0 {
   background-color: #e5bfcb;
 }
