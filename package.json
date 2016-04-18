@@ -1,6 +1,8 @@
 {
   "name": "okdice",
-  "version": "0.0.0",
+  "version": "0.0.28",
+  "repository": "https://github.com/muddylemon/okdice",
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
