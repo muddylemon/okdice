@@ -1,7 +1,7 @@
 //
 // okdice, kdice helper
 //
-// copyright 2014, @muddylemon
+// copyright 2014-2016, @muddylemon
 // use of this source code is governed by a MIT license
 //
 
@@ -34,22 +34,22 @@
       beatpace: 1200,
       chatbuttons: [{
         "text": "thank you",
-        "label": "ty",
+        "label": "ty"
       }, {
         "text": "yes",
-        "label": "y",
+        "label": "y"
       }, {
         "text": "no",
-        "label": "n",
+        "label": "n"
       }, {
         "text": "gg",
-        "label": "gg",
+        "label": "gg"
       }, {
         "text": "gt",
-        "label": "gt",
+        "label": "gt"
       }, {
         "text": "gl 2 all friends lets warrr",
-        "label": "gl",
+        "label": "gl"
       }],
       theme: {
         active: true,
@@ -91,41 +91,36 @@
 
     window.setInterval(okdice.beat, opts.beatpace || 1000);
 
-  }
+  };
 
   function loadActions() {
 
     var say = function(message) {
       okdice.ui.chatinput.val(message.toString());
       okdice.ui.chatsendbutton.click();
-    };
-
-    var focus = function() {
+    },
+    focus = function() {
       okdice.ui.chatinput.focus();
-    };
-
-    var sit = function(table) {
+    },
+    sit = function(table) {
       if (table) {
         window.location = "#" + table;
       }
       okdice.ui.sitInButton.click();
-    }
-
-    var stand = function() {
+    },
+    stand = function() {
       okdice.ui.sitOutButton.click();
-    }
-
-    var endturn = function() {
+    },
+    endturn = function() {
       okdice.ui.gamecontrols.find("button").each(function() {
         if ($(this).html() === "End Turn" && $(this).is(":visible")) {
           $(this).click();
         }
       });
-    }
-
-    var move = function(table) {
+    },
+    move = function(table) {
       window.location = "#" + table;
-    }
+    };
 
     // say is throttled to execute no more than once every 2 seconds
     return {
@@ -205,7 +200,6 @@
       list: list,
       containers: loadContainers,
       get: function(id) {
-
         if (!_.isUndefined(id)) {
           return list[id];
         }
@@ -245,11 +239,11 @@
         }
         return this;
       },
-      tables: function(){
-          if ((okdice.session.cycle % 3) === 0){
-                okdice.trigger('load:tables');
-          }
-          return this;
+      tables: function() {
+        if ((okdice.session.cycle % 3) === 0) {
+          okdice.trigger('load:tables');
+        }
+        return this;
       },
       turn: function() {
 
@@ -262,7 +256,6 @@
         var status = $(".iogc-GameWindow-status").text();
 
         if (status.indexOf('running') > 0) {
-
           if (okdice.status.isGameRunning === false) {
             okdice.trigger("game:start");
             okdice.status.isGameRunning = true;
@@ -270,11 +263,8 @@
         }
 
         if (status.indexOf('waiting') > 0) {
-
           if (okdice.status.isGameRunning === true) {
-            // not any more it's not!
             okdice.trigger("game:end");
-
             okdice.status.isGameRunning = false;
           }
         }
@@ -284,61 +274,27 @@
       chat: function() {
 
         $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
-          var el = $(this);
 
-          var content = el.find(".gwt-HTML").html();
-          var semi = content.indexOf(":");
-
+          var el = $(this),
+            content = el.find(".gwt-HTML").html(),
+            semi = content.indexOf(":");
 
           if (semi) {
-
-            var originalMsg = content.substring(semi);
-            var replacedMsg = Autolinker.link(originalMsg, {
+            var autoLinkedMsg = Autolinker.link(content.substring(semi), {
               newWindow: true,
               truncate: 45
             });
-
-            el.find(".gwt-HTML").html(content.substring(0, semi) + replacedMsg);
-
-
-            // var author = el.find("b").first().html();
-
-            // var speakingPlayer = _.findWhere(okdice.players.list, function(player){
-            //     return (author == player.name);
-            // });
-
-
-            // var chatBubbleTemplate = _.template('<p class="triangle-border top"><%= msg %></p>');
-
-
-            // if (author) {
-            //     console.log(author);
-
-            //     var chatBubble = $(chatBubbleTemplate({msg: replacedMsg}));
-            //     console.log(chatBubble);
-            //     console.log(speakingPlayer);
-
-            //     console.log(speakingPlayer.container)
-
-            //     speakingPlayer.container.after(chatBubble);
-
-            //     chatBubble.fadeOut('slow', function(){
-            //         $(this).remove();
-            //     })
-            // }
-
-
-
+            el.find(".gwt-HTML").html(content.substring(0, semi) + autoLinkedMsg);
           }
-
           el.addClass('okdiced');
         });
+
         return this;
       }
     };
 
     return function() {
-        okdice.session.cycle++;
+      okdice.session.cycle++;
 
       processes.autoend()
         .turn()
@@ -529,7 +485,7 @@
       }
 
       // don't allow the tables to be reloaded more than once every 2 seconds
-      var reload =  _.throttle(loadTables, 2000);
+      var reload = _.throttle(loadTables, 2000);
 
       okdice.on('load:tables', reload);
 
