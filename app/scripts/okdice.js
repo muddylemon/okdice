@@ -7,287 +7,309 @@
 
 (function(_, $, Backbone, Bacon) {
 
-  // WE'LL DO IT GLOBAL (and sandboxed)
-  okdice = {
-    version: "0.0.16",
-    colors: {
-      names: ["red", "green", "purple", "yellow", "blue", "brown", "teal"],
-      lightrgb: ["#e5bfcb", "#84ba96", "#A884BA", "#baba84", "#8484ba", "#BA9684", "#84BABA"],
-      rgb: ["#F00", "#090", "#60C", "#FF0", "#009", "#630", "#0CC"]
-    },
-    session: {
-      player: false,
-      cycle: 0
-    },
-    status: {
-      loaded: false,
-      loggedIn: false,
-      playing: false,
-      isGameRunning: false,
-      myTurn: false,
-      flagged: false,
-      autoend: false
-    },
-    options: {
-      active: true,
-      debug: true,
-      beatpace: 1200,
-      chatbuttons: [{
-        "text": "thank you",
-        "label": "ty"
-      }, {
-        "text": "yes",
-        "label": "y"
-      }, {
-        "text": "no",
-        "label": "n"
-      }, {
-        "text": "gg",
-        "label": "gg"
-      }, {
-        "text": "gt",
-        "label": "gt"
-      }, {
-        "text": "gl 2 all friends lets warrr",
-        "label": "gl"
-      }],
-      theme: {
+    // WE'LL DO IT GLOBAL (and sandboxed)
+    okdice = {
+      version: "0.0.16",
+      colors: {
+        names: ["red", "green", "purple", "yellow", "blue", "brown", "teal"],
+        lightrgb: ["#e5bfcb", "#84ba96", "#A884BA", "#baba84", "#8484ba", "#BA9684", "#84BABA"],
+        rgb: ["#F00", "#090", "#60C", "#FF0", "#009", "#630", "#0CC"]
+      },
+      session: {
+        player: false,
+        cycle: 0
+      },
+      status: {
+        loaded: false,
+        loggedIn: false,
+        playing: false,
+        isGameRunning: false,
+        myTurn: false,
+        flagged: false,
+        autoend: false
+      },
+      options: {
         active: true,
-        hideHeader: true,
-        fontsize: "14px"
-      }
-    }
-  };
-
-  _.extend(okdice, Backbone.Events);
-
-  okdice.start = function(options) {
-
-    var opts = _.extend(okdice.options, options);
-
-    okdice.on("all", function(eventName) {
-      console.log("Event:" + eventName);
-    });
-
-
-
-    if (opts.active === false) {
-      console.log("okdice setting: options.active is false, shutting down");
-      return;
-    }
-
-    okdice.actions = loadActions(opts);
-    okdice.ui = loadUi(opts);
-    okdice.players = loadPlayers(opts);
-    okdice.beat = beat();
-
-
-    loadTheme(opts);
-    loadButtons(opts);
-
-    okdice.session.player = okdice.players.current();
-
-    okdice.status.loaded = true;
-
-    window.setInterval(okdice.beat, opts.beatpace || 1000);
-
-  };
-
-  function loadActions() {
-
-    var say = function(message) {
-      okdice.ui.chatinput.val(message.toString());
-      okdice.ui.chatsendbutton.click();
-    },
-    focus = function() {
-      okdice.ui.chatinput.focus();
-    },
-    sit = function(table) {
-      if (table) {
-        window.location = "#" + table;
-      }
-      okdice.ui.sitInButton.click();
-    },
-    stand = function() {
-      okdice.ui.sitOutButton.click();
-    },
-    endturn = function() {
-      okdice.ui.gamecontrols.find("button").each(function() {
-        if ($(this).html() === "End Turn" && $(this).is(":visible")) {
-          $(this).click();
+        debug: true,
+        beatpace: 1200,
+        chatbuttons: [{
+          "text": "thank you",
+          "label": "ty"
+        }, {
+          "text": "yes",
+          "label": "y"
+        }, {
+          "text": "no",
+          "label": "n"
+        }, {
+          "text": "gg",
+          "label": "gg"
+        }, {
+          "text": "gt",
+          "label": "gt"
+        }, {
+          "text": "gl 2 all friends lets warrr",
+          "label": "gl"
+        }],
+        theme: {
+          active: true,
+          hideHeader: true,
+          fontsize: "14px"
         }
-      });
-    },
-    move = function(table) {
-      window.location = "#" + table;
+      }
     };
 
-    // say is throttled to execute no more than once every 2 seconds
-    return {
-      say: _.throttle(say, 2000),
-      focus: focus,
-      stand: stand,
-      sit: sit,
-      endturn: endturn,
-      move: move
+    _.extend(okdice, Backbone.Events);
+
+    okdice.start = function(options) {
+
+      var opts = _.extend(okdice.options, options);
+
+      if (opts.debug === true) {
+        okdice.on("all", function(eventName) {
+          console.log("Event:" + eventName);
+        });
+      }
+
+      okdice.on("chat:said", function(obj) {
+        console.log(obj);
+      });
+
+      if (opts.active === false) {
+        console.log("okdice setting: options.active is false, shutting down");
+        return;
+      }
+
+      okdice.actions = loadActions(opts);
+      okdice.ui = loadUi(opts);
+      okdice.players = loadPlayers(opts);
+      okdice.beat = beat();
+
+
+      loadTheme(opts);
+      loadButtons(opts);
+
+      okdice.session.player = okdice.players.current();
+
+      okdice.status.loaded = true;
+
+      window.setInterval(okdice.beat, opts.beatpace || 1000);
+
+    };
+
+    function loadActions() {
+
+      var say = function(message) {
+          okdice.ui.chatinput.val(message.toString());
+          okdice.ui.chatsendbutton.click();
+        },
+        focus = function() {
+          okdice.ui.chatinput.focus();
+        },
+        sit = function(table) {
+          if (table) {
+            window.location = "#" + table;
+          }
+          okdice.ui.sitInButton.click();
+        },
+        stand = function() {
+          okdice.ui.sitOutButton.click();
+        },
+        endturn = function() {
+          okdice.ui.gamecontrols.find("button").each(function() {
+            if ($(this).html() === "End Turn" && $(this).is(":visible")) {
+              $(this).click();
+            }
+          });
+        },
+        move = function(table) {
+          window.location = "#" + table;
+        };
+
+      // say is throttled to execute no more than once every 2 seconds
+      return {
+        say: _.throttle(say, 2000),
+        focus: focus,
+        stand: stand,
+        sit: sit,
+        endturn: endturn,
+        move: move
+      }
     }
-  }
 
 
-  function loadPlayers() {
+    function loadPlayers() {
 
-    var player = function(id) {
+      var player = function(id) {
 
-      var container = $(".iogc-PlayerPanel" + id);
+        var container = $(".iogc-PlayerPanel" + id);
 
-      var name = container.find('.iogc-PlayerPanel-name').text();
-      var profileUrl = container.find('.iogc-PlayerPanel-name').find('a').attr('href') || '';
-      var kdiceId = profileUrl.replace('/profile/', '');
+        var name = container.find('.iogc-PlayerPanel-name').text();
+        var profileUrl = container.find('.iogc-PlayerPanel-name').find('a').attr('href') || '';
+        var kdiceId = profileUrl.replace('/profile/', '');
+
+        return {
+          id: id,
+          kdiceId: kdiceId,
+          color: okdice.colors.names[id],
+          hex: okdice.colors.lightrgb[id],
+          container: container,
+          name: name,
+          profileUrl: profileUrl,
+          review: function(text) {
+            // post this as a review of this player
+            chrome.extension.sendRequest({
+              'kdiceId': kdiceId,
+              'cid': '',
+              'review': text
+            }, callback);
+          },
+          flag: function() {
+            okdice.actions.say("Flag " + this.color);
+          },
+          mute: function() {
+            okdice.actions.say("/mute " + this.name);
+            okdice.actions.say("Player " + this.name + " has been muted.");
+          },
+          unmute: function() {
+            okdice.actions.say("/unmute " + this.name);
+            okdice.actions.say("Player " + this.name + " has been unmuted.");
+          }
+        };
+      };
+
+      var list = _.map(_.range(7), function(id) {
+        return player(id);
+      });
+
+      var loadContainers = function(id) {
+        if (id) {
+          return list[id].container;
+        }
+        return _.pluck(list, 'container');
+      };
+
+      var loadCurrent = function() {
+        var name = $(".iogc-LoginPanel-nameHeading").text() || false;
+        if (name) {
+          okdice.status.loggedIn = true;
+        }
+        return name;
+      }
 
       return {
-        id: id,
-        kdiceId: kdiceId,
-        color: okdice.colors.names[id],
-        hex: okdice.colors.lightrgb[id],
-        container: container,
-        name: name,
-        profileUrl: profileUrl,
-        review: function(text) {
-          // post this as a review of this player
-          chrome.extension.sendRequest({
-            'kdiceId': kdiceId,
-            'cid': '',
-            'review': text
-          }, callback);
+        player: function(id) {
+          return player(id);
         },
-        flag: function() {
-          okdice.actions.say("Flag " + this.color);
+        list: list,
+        containers: loadContainers,
+        get: function(id) {
+          if (!_.isUndefined(id)) {
+            return list[id];
+          }
+          return list;
         },
-        mute: function() {
-          okdice.actions.say("/mute " + this.name);
-          okdice.actions.say("Player " + this.name + " has been muted.");
-        },
-        unmute: function() {
-          okdice.actions.say("/unmute " + this.name);
-          okdice.actions.say("Player " + this.name + " has been unmuted.");
-        }
+        current: loadCurrent
       };
-    };
-
-    var list = _.map(_.range(7), function(id) {
-      return player(id);
-    });
-
-    var loadContainers = function(id) {
-      if (id) {
-        return list[id].container;
-      }
-      return _.pluck(list, 'container');
-    };
-
-    var loadCurrent = function() {
-      var name = $(".iogc-LoginPanel-nameHeading").text() || false;
-      if (name) {
-        okdice.status.loggedIn = true;
-      }
-      return name;
     }
 
-    return {
-      player: function(id) {
-        return player(id);
-      },
-      list: list,
-      containers: loadContainers,
-      get: function(id) {
-        if (!_.isUndefined(id)) {
-          return list[id];
-        }
-        return list;
-      },
-      current: loadCurrent
-    };
-  }
 
+    function loadUi() {
 
-  function loadUi() {
-
-    return {
-      game: $("#KGame"),
-      gametable: $(".iogc-GameWindow-table"),
-      gamecontrols: $(".iogc-Controls"),
-      sidebar: $("#iogc-PlayerPanel"),
-      header: $("#hd"),
-      chatbox: $(".iogc-ChatPanel"),
-      chatinput: $(".iogc-ChatPanel .gwt-TextBox"),
-      chatsendbutton: $(".iogc-ChatPanel").find(".iogc-NewButton"),
-      chatmessages: $(".iogc-ChatPanel").find(".iogc-ChatPanel-messages"),
-      tablelist: $(".iogc-ScrollTable-table"),
-      sitOutButton: $(".iogc-GameWindow-sitOutButton"),
-      sitInButton: $(".iogc-GameWindow-sitDownButton")
+      return {
+        game: $("#KGame"),
+        gametable: $(".iogc-GameWindow-table"),
+        gamecontrols: $(".iogc-Controls"),
+        sidebar: $("#iogc-PlayerPanel"),
+        header: $("#hd"),
+        chatbox: $(".iogc-ChatPanel"),
+        chatinput: $(".iogc-ChatPanel .gwt-TextBox"),
+        chatsendbutton: $(".iogc-ChatPanel").find(".iogc-NewButton"),
+        chatmessages: $(".iogc-ChatPanel").find(".iogc-ChatPanel-messages"),
+        tablelist: $(".iogc-ScrollTable-table"),
+        sitOutButton: $(".iogc-GameWindow-sitOutButton"),
+        sitInButton: $(".iogc-GameWindow-sitDownButton")
+      }
     }
-  }
 
 
-  function beat() {
+    function beat() {
 
-    var processes = {
-      autoend: function() {
-        if (okdice.aet && okdice.aet.is(":checked")) {
-          okdice.status.autoend = true;
-          okdice.actions.endturn();
-        }
-        return this;
-      },
-      tables: function() {
-        if ((okdice.session.cycle % 3) === 0) {
-          okdice.trigger('load:tables');
-        }
-        return this;
-      },
-      turn: function() {
-
-        // toggle isMyTurn if it is my turn right now, or vice versa
-        // if it is my turn, blink my tab title and change the favicon
-        return this;
-      },
-      game: function() {
-
-        var status = $(".iogc-GameWindow-status").text();
-
-        if (status.indexOf('running') > 0) {
-          if (okdice.status.isGameRunning === false) {
-            okdice.trigger("game:start");
-            okdice.status.isGameRunning = true;
+      var processes = {
+        autoend: function() {
+          if (okdice.aet && okdice.aet.is(":checked")) {
+            okdice.status.autoend = true;
+            okdice.actions.endturn();
           }
+          return this;
+        },
+        tables: function() {
+          if ((okdice.session.cycle % 3) === 0) {
+            okdice.trigger('load:tables');
+          }
+          return this;
+        },
+        turn: function() {
+
+          // toggle isMyTurn if it is my turn right now, or vice versa
+          // if it is my turn, blink my tab title and change the favicon
+          return this;
+        },
+        game: function() {
+
+          var status = $(".iogc-GameWindow-status").text();
+
+          if (status.indexOf('running') > 0) {
+            if (okdice.status.isGameRunning === false) {
+              okdice.trigger("game:start");
+              okdice.status.isGameRunning = true;
+            }
+          }
+
+          if (status.indexOf('waiting') > 0) {
+            if (okdice.status.isGameRunning === true) {
+              okdice.trigger("game:end");
+              okdice.status.isGameRunning = false;
+            }
+          }
+
+          return this;
+        },
+        chat: function() {
+
+          $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
+              /**
+               * Check for:
+               * Someone arrived/left
+               * someone chatted
+               * ignore floods/repeats
+               **/
+
+              var el = $(this),
+                content = el.find(".gwt-HTML").html(),
+                semi = content.indexOf(":"),
+                message = getMessage(content),
+                speaker = getSpeaker(el);
+
+              el.find(".gwt-HTML").html(content.substring(0, semi + 2) + message);
+              okdice.trigger("chat:said", {
+                speaker: speaker,
+                message: message
+              });
+
+            el.addClass('okdiced');
+          });
+
+        function getSpeaker(el) {
+          return el.find(".gwt-HTML").find('b').text();
         }
 
-        if (status.indexOf('waiting') > 0) {
-          if (okdice.status.isGameRunning === true) {
-            okdice.trigger("game:end");
-            okdice.status.isGameRunning = false;
-          }
+        function getMessage(content) {
+          return Autolinker.link(content.substring(content.indexOf(":")+2), {
+            newWindow: true,
+            truncate: 45
+          });
         }
-
-        return this;
-      },
-      chat: function() {
-
-        $('.iogc-ChatPanel-messages tr:not(.okdiced)').each(function() {
-
-          var el = $(this),
-            content = el.find(".gwt-HTML").html(),
-            semi = content.indexOf(":");
-
-          if (semi) {
-            var autoLinkedMsg = Autolinker.link(content.substring(semi), {
-              newWindow: true,
-              truncate: 45
-            });
-            el.find(".gwt-HTML").html(content.substring(0, semi) + autoLinkedMsg);
-          }
-          el.addClass('okdiced');
-        });
 
         return this;
       }
@@ -323,7 +345,6 @@
       container: park
     });
     loadFlagButtons(park);
-    //loadPlayerButtons();
     loadChatButtons(options);
 
 
@@ -385,12 +406,9 @@
       });
 
       $(".profile-player").on('click', function() {
-        var pid = $(this).data('playerid');
-
-        var player = okdice.players.player(pid);
-        var profileUrl = player.profileUrl;
-        console.log(profileUrl, "prp");
-
+        var pid = $(this).data('playerid'),
+          player = okdice.players.player(pid),
+          profileUrl = player.profileUrl;
         window.open(profileUrl);
       });
 
@@ -463,23 +481,17 @@
             type: 'GET',
           })
           .done(function(data) {
-
             var tables = _.sortBy(data.tables, function(table) {
               return -table.playerCount;
             });
-
             var rows = _.map(tables, function(table) {
               if (table.state == 0) {
-
                 table.desc = categoryClassMap[table.category_id];
-
                 return tableTemplate(table);
               }
             });
-
             if (rows.length) {
               listTable.find('.current-tables').html(rows);
-
             }
           });
       }
@@ -507,13 +519,7 @@
   }
 
   function loadTheme(options) {
-
     var themeOptions = options.theme || {};
-
-    if (themeOptions.showNativeAet) {
-      okdice.ui.gamecontrols.find('.gwt-CheckBox').show();
-    }
-
     if (themeOptions.active) {
       // do the theming
       if (themeOptions.hideHeader) {
@@ -541,9 +547,6 @@
 
         });
       }
-
-
-
     }
   }
 
