@@ -1,9 +1,10 @@
 .current-tables {
-  font-size: .9em;
+  font-size: .8em;
 }
 .table-selector thead {
   background-color: #CCC;
   color: #333;
+  font-size: .5em;
 }
 .table-name {
   font-weight: bold;
@@ -12,6 +13,10 @@
 }
 .table-num-players {
   text-align: center;
+}
+.table-num-players small {
+  color: #333;
+  padding: 0 0 0 4px;
 }
 .pts-0 {
   background-color: #e5bfcb;
