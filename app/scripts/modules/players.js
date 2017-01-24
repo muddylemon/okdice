@@ -15,6 +15,7 @@ var Players = function() {
 
   function load() {
     players = _.map(_.range(7), function(index) {
+      return parse(index);
     });
   }
 
@@ -30,8 +31,7 @@ var Players = function() {
     player.profileUrl = el
       .find('.iogc-PlayerPanel-name')
       .find('a')
-      .attr('href') ||
-      '';
+      .attr('href') || '';
     player.kdiceId = player.profileUrl.replace('/profile/', '');
 
     return player;

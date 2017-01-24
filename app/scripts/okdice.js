@@ -146,7 +146,7 @@
           // post this as a review of this player
           chrome.extension.sendRequest(
             { kdiceId: kdiceId, cid: '', review: text },
-            callback,
+            callback
           );
         },
         flag: function() {
@@ -320,7 +320,7 @@
 
     function loadAutoEndTurnButton(container) {
       container.append(
-        '<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>',
+        '<div class="auto-end-turn"><label for="aet"><input type="checkbox" name="aet" id="aet"> Auto-End Turn</label></div>'
       );
 
       okdice.aet = $('#aet');
@@ -341,7 +341,7 @@
     function loadChatButtons(options) {
       var chatContainer = $('<div class="chat-buttons"></div>');
       var chatButtonTemplate = _.template(
-        '<button class="chat-btn" data-txt="<%= text %>"><%= label %></button>',
+        '<button class="chat-btn" data-txt="<%= text %>"><%= label %></button>'
       );
       var chatButtons = _.map(options.chatbuttons, function(btn) {
         return $(chatButtonTemplate(btn));
@@ -356,7 +356,7 @@
 
     function loadPlayerButtons() {
       var btnsTemplate = _.template(
-        '<div class="player_btn_collection"><button class="iogc-NewButton-green iogc-NewButton flag-player" data-playerid="<%= id %>"> &#9873; Flag </button><button class="iogc-NewButton-green iogc-NewButton mute-player" data-playerid="<%= id %>"> Mute </button><button class="iogc-NewButton-green iogc-NewButton profile-player" data-playerid="<%= id %>">Profile</button></div>',
+        '<div class="player_btn_collection"><button class="iogc-NewButton-green iogc-NewButton flag-player" data-playerid="<%= id %>"> &#9873; Flag </button><button class="iogc-NewButton-green iogc-NewButton mute-player" data-playerid="<%= id %>"> Mute </button><button class="iogc-NewButton-green iogc-NewButton profile-player" data-playerid="<%= id %>">Profile</button></div>'
       );
 
       _.each(okdice.players.list, function(player) {
@@ -419,10 +419,10 @@
         $('.iogc-GameWindow-commands').find('tr');
 
       var tableTemplate = _.template(
-        '<tr class="pts-<%= desc %>"><td class="table-name"><a href="#<%= name %>"><%= name %></a></td><td class="table-num-players"><%= playerCount %> <small>(<%= viewerCount %>)</small></td><td class="table-min-points"><%= desc.replace("000","k") %></td></tr>',
+        '<tr class="pts-<%= desc %>"><td class="table-name"><a href="#<%= name %>"><%= name %></a></td><td class="table-num-players"><%= playerCount %> <small>(<%= viewerCount %>)</small></td><td class="table-min-points"><%= desc.replace("000","k") %></td></tr>'
       ),
         optionTemplate = _.template(
-          '<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %></span> </option>',
+          '<option value="<%= name %>"><%= name %> (<%= playerCount %>) -- <span class="pull-right opt-desc"><%= desc %></span> </option>'
         ),
         currentTable = window.location.hash,
         categoryClassMap = {
@@ -430,13 +430,13 @@
           '3': '100',
           '4': '500',
           '5': '2000',
-          '6': '5000',
+          '6': '5000'
         },
         select = $(
-          '<select class="table-selector"><option value="" class="default-option">Change Table</option></select>',
+          '<select class="table-selector"><option value="" class="default-option">Change Table</option></select>'
         ),
         listTable = $(
-          '<table class="table striped table-selector"><thead><td>Name</td><td>Players</td><td>Pts</td></thead><tbody class="current-tables"></tbody></table>',
+          '<table class="table striped table-selector"><thead><td>Name</td><td>Players</td><td>Pts</td></thead><tbody class="current-tables"></tbody></table>'
         );
 
       // attach the select element to the top bar
@@ -502,7 +502,7 @@
             .css({
               'background-color': player.hex,
               border: '5px solid ' + player.hex,
-              'border-collapse': 'separate',
+              'border-collapse': 'separate'
             })
             .addClass('player-' + player.color);
         });
