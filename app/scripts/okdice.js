@@ -18,9 +18,9 @@
         '#baba84',
         '#8484ba',
         '#BA9684',
-        '#84BABA',
+        '#84BABA'
       ],
-      rgb: [ '#F00', '#090', '#60C', '#FF0', '#009', '#630', '#0CC' ],
+      rgb: [ '#F00', '#090', '#60C', '#FF0', '#009', '#630', '#0CC' ]
     },
     session: { player: false, cycle: 0 },
     status: {
@@ -30,7 +30,7 @@
       isGameRunning: false,
       myTurn: false,
       flagged: false,
-      autoend: false,
+      autoend: false
     },
     options: {
       active: true,
@@ -42,10 +42,10 @@
         { text: 'no', label: 'n' },
         { text: 'gg', label: 'gg' },
         { text: 'gt', label: 'gt' },
-        { text: 'gl 2 all friends lets warrr', label: 'gl' },
+        { text: 'gl 2 all friends lets warrr', label: 'gl' }
       ],
-      theme: { active: true, hideHeader: true, fontsize: '14px' },
-    },
+      theme: { active: true, hideHeader: true, fontsize: '14px' }
+    }
   };
 
   _.extend(okdice, Backbone.Events);
@@ -118,7 +118,7 @@
       stand: stand,
       sit: sit,
       endturn: endturn,
-      move: move,
+      move: move
     };
   }
 
@@ -159,7 +159,7 @@
         unmute: function() {
           okdice.actions.say('/unmute ' + this.name);
           okdice.actions.say('Player ' + this.name + ' has been unmuted.');
-        },
+        }
       };
     };
 
@@ -194,7 +194,7 @@
         }
         return list;
       },
-      current: loadCurrent,
+      current: loadCurrent
     };
   }
 
@@ -211,7 +211,7 @@
       chatmessages: $('.iogc-ChatPanel').find('.iogc-ChatPanel-messages'),
       tablelist: $('.iogc-ScrollTable-table'),
       sitOutButton: $('.iogc-GameWindow-sitOutButton'),
-      sitInButton: $('.iogc-GameWindow-sitDownButton'),
+      sitInButton: $('.iogc-GameWindow-sitDownButton')
     };
   }
 
@@ -281,12 +281,12 @@
         function getMessage(content) {
           return Autolinker.link(content.substring(content.indexOf(':') + 2), {
             newWindow: true,
-            truncate: 45,
+            truncate: 45
           });
         }
 
         return this;
-      },
+      }
     };
 
     return function() {
