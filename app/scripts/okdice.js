@@ -12,12 +12,12 @@
     colors: {
       names: [ 'red', 'green', 'purple', 'yellow', 'blue', 'brown', 'teal' ],
       lightrgb: [
-        '#e5bfcb',
+        '#ffb9b9',
         '#84ba96',
         '#A884BA',
         '#baba84',
         '#8484ba',
-        '#BA9684',
+        '#ffaa80',
         '#84BABA'
       ],
       rgb: [ '#F00', '#090', '#60C', '#FF0', '#009', '#630', '#0CC' ]
